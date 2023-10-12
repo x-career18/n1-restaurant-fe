@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import Main from "../components/Main";
 import AppContext from "../contexts/AppContext/AppContext";
 import { useNavigate } from "react-router-dom";
 import { notification } from "antd";
+import Reservation from "./Reservation";
 
 const Table = () => {
   const navigate = useNavigate();
@@ -45,75 +45,72 @@ const Table = () => {
   };
 
   return (
-    <Main>
+    <div>
       {contextHolder}
-      <div className="h-100">
-        <div
-          className="mt-2 row align-items-center"
-          style={{
-            height: 60,
-          }}
-        >
-          <h2 className="col px-4">Xin mời chọn bàn</h2>
-          <div className="col h-100 align-items-center">
-            <div className="d-flex h-75 gap-4">
-              <div className="color-free h-100 w-25 d-flex align-items-center justify-content-center">
-                Còn trống
-              </div>
-              <div className="color-reservation h-100 w-25 d-flex align-items-center justify-content-center">
-                Đã đặt
-              </div>
-              <div className="color-active h-100 w-25 d-flex align-items-center justify-content-center">
-                Đang hoạt động
-              </div>
-            </div>
+      {/* Header của trang table */}
+      <div className="mt-2 row mx-0 px-4 height-60" >
+        <div className="col my-center-vertiacal">
+          <h2>Xin mời chọn bàn</h2>
+        </div>
+
+        <div className="col my-center-vertiacal gap-4 justify-content-end">
+          <div className="color-free h-100 w-25 d-flex align-items-center justify-content-center">
+            Còn trống
+          </div>
+          <div className="color-reservation h-100 w-25 d-flex align-items-center justify-content-center">
+            Đã đặt
+          </div>
+          <div className="color-active h-100 w-25 d-flex align-items-center justify-content-center">
+            Đang hoạt động
           </div>
         </div>
-        <div className="row row-cols-4">
-          {tableList.map((item, index) => {
-            const styleDefault =
-              "ratio ratio-1x1 d-flex flex-column align-items-center justify-content-center p-3 fs-4";
-            const styleStatus =
-              item.status === 1
-                ? "color-free"
-                : item.status === 2
-                ? "color-reservation"
-                : "color-active";
-            const stylesSelect = selectList.includes(item.tableId)
-              ? `border-2`
-              : `border-0`;
-            return (
-              <div key={index} className="col p-4 ">
-                <button
-                  type="button"
-                  className={`${styleDefault} ${styleStatus} ${stylesSelect}`}
-                  onClick={() => handleChooseTable(item)}
-                >
-                  <img
-                    src={item.image}
-                    alt={item.image}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                    }}
-                  />
-                  A {item.tableId}
-                </button>
-              </div>
-            );
-          })}
+      </div>
+
+      {/* Body của trang table */}
+      <div className="row mt-2 mx-0">
+        {/* Phần trái */}
+        <div className="col">
+          <div className="row row-cols-4 mx-0">
+            {tableList.map((item, index) => {
+              const styleDefault =
+                "ratio ratio-1x1 d-flex flex-column align-items-center justify-content-center fs-4";
+              const styleStatus =
+                item.status === 1
+                  ? "color-free"
+                  : item.status === 2
+                    ? "color-reservation"
+                    : "color-active";
+              const stylesSelect = selectList.includes(item.tableId)
+                ? `border-2`
+                : `border-0`;
+              return (
+                <div key={index} className="col pb-4">
+                  <button
+                    type="button"
+                    className={`${styleDefault} ${styleStatus} ${stylesSelect}`}
+                    onClick={() => handleChooseTable(item)}
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.image}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    />
+                    A {item.tableId}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {/* Phần phải */}
+        <div className="col-4 border-start">
+          <Reservation />
         </div>
       </div>
-      <div className="position-fixed bottom-0 end-0 z-1 p-4">
-        <button
-          type="button"
-          className="bg-my-primary text-center text-white fs-3 p-2 rounded-1 border-0"
-          onClick={handleNext}
-        >
-          Tiếp theo
-        </button>
-      </div>
-    </Main>
+    </div>
   );
 };
 

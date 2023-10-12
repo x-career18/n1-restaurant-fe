@@ -43,14 +43,14 @@ const FindRestaurant = () => {
                 <AutoComplete
                     popupMatchSelectWidth={252}
                     style={{
-                        width: 300,
+                            width: 300,
                     }}
                     options={options}
                     onSelect={onSelect}
                     onSearch={handleSearch}
                     size="middle"
                 >
-                    <Input.Search placeholder="Nhập vị trí của bạn" enterButton />
+                    <Input.Search placeholder="Nhập tên đường của bạn" enterButton />
                 </AutoComplete>
             </div>
 

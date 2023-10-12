@@ -74,8 +74,7 @@ const Reservation = () => {
   TableDetail.tableId = selectList.sort().join(", ");
 
   return (
-    <Main>
-      <div className="container h-100 mt-5">
+      <div className="container mt-5">
         <h1>Thông tin đặt bàn</h1>
         <hr />
         {/* Thông tin của nhà hàng */}
@@ -160,7 +159,6 @@ const Reservation = () => {
           }}
         </Formik>
       </div>
-    </Main>
   );
 };
 

@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import Main from '../components/Main'
+import { FOOD } from '../utils/LoadImage';
+import Reservation from './Reservation';
 
 const dataTemple = {
     id: 1,
     title: "Sicilian",
     desc: "Ignite your taste buds with a fiery combination of spicy pepperoni, jalapeños, crushed red pepper flakes, and melted mozzarella cheese, delivering a kick with every bite.",
-    img: "/temporary/p1.png",
+    img: FOOD[0],
     price: 24.9,
     options: [
         {
@@ -30,11 +32,12 @@ const Food = ({ showDesc = true }) => {
         foodList.push(dataTemple);
     }
     return (
-        <Main>
-            <div className='container h-100'>
-                <div className="row row-cols-4 text-my-color-navbar">
+        <div className="row pt-2 mx-0 h-100">
+            {/* Phần trái */}
+            <div className="col h-100">
+                <div className="row row-cols-3 row-cols-md-4 text-my-color-navbar mx-0 h-100 overflow-auto">
                     {foodList.map((item, index) => (
-                        <div key={index} className="col p-4 align-items-center justify-content-center">
+                        <div key={index} className="col p-4">
                             {item.img && (
                                 <img src={item.img} alt={item.img} className="img-fluid" />
                             )}
@@ -61,7 +64,11 @@ const Food = ({ showDesc = true }) => {
                     ))}
                 </div>
             </div>
-        </Main>
+            {/* Phần phải */}
+            <div className="col-4 border-start h-100">
+                <Reservation />
+            </div>
+        </div>
     )
 }
 

@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Menu from "./Menu";
 import { NavLink } from "react-router-dom";
-import { navLinkLeft, navLinkRight } from "../modelUI/NavbarLink";
+import { customer } from "../modelUI/NavbarLink";
+import { isObjectEmpty } from "../utils/CheckEmpty";
+import AppContext from "../contexts/AppContext/AppContext";
 
 const Navbar = () => {
   const isLogin = false;
+  const { tab } = useContext(AppContext);
+  if (isObjectEmpty(tab)) return;
+
   return (
-    <div className="text-my-color-navbar p-4 d-flex align-items-center border-bottom text-uppercase border-warning-subtle position-relative"
+    <div className="my-header text-my-color-navbar p-4 d-flex align-items-center border-bottom text-uppercase border-warning-subtle position-relative"
       style={{
         height: 70
       }}
@@ -18,7 +23,7 @@ const Navbar = () => {
       <div className="p-4 d-flex justify-content-start align-items-center flex-fill d-none d-md-block">
         <div className="d-flex justify-content-center align-items-center gap-4">
           {
-            navLinkLeft.map((item, index) => {
+            customer.navLinkLeft.map((item, index) => {
               return (
                 <NavLink
                   key={index}
@@ -55,9 +60,9 @@ const Navbar = () => {
 
           {/* Hiển thị tất cả */}
           {
-            navLinkRight.map((item, index) => {
+            customer.navLinkRight.map((item, index) => {
               return <NavLink
-                key={index + navLinkLeft.length}
+                key={index + customer.navLinkLeft.length}
                 to={item.path}
                 className="nav-link"
                 onClick={(e) => {

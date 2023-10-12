@@ -3,12 +3,15 @@ import AppContext from "./AppContext";
 import { randomInt } from "../../utils/Random";
 import createRestaurant from "../../models/Restaurant";
 import createTable from "../../models/Table";
+import { RESTAURANTS } from "../../utils/LoadImage";
+import { customer } from "../../modelUI/NavbarLink";
 
 const AppState = ({ children }) => {
   const [tableList, setTableList] = useState([]);
   const [selectList, setSelectList] = useState([]);
   const [reservation, setReservation] = useState({});
   const [restaurants, setRestaurants] = useState([]);
+  const [tab, setTab] = useState({});
 
   useEffect(() => {
     let tables = [];
@@ -34,11 +37,22 @@ const AppState = ({ children }) => {
         openTime: "Fri Oct 06 2023 21:10:33",
         closeTime: "Fri Oct 06 2023 21:10:33",
         description: `Nhà hàng ngon số ${index}`,
-        images: ["/slide1.png", "/slide2.png", "/slide3.jpg", "/slide1.png", "/slide2.png",]
+        images: [
+          `${RESTAURANTS[0]}`,
+          `${RESTAURANTS[1]}`,
+          `${RESTAURANTS[0]}`,
+          `${RESTAURANTS[1]}`,
+          `${RESTAURANTS[0]}`,
+          `${RESTAURANTS[1]}`,
+          `${RESTAURANTS[0]}`,
+          `${RESTAURANTS[1]}`,
+        ]
       });
       restaurants.push(item);
     }
     setRestaurants(restaurants);
+
+    setTab(customer);
   }, []);
 
 
@@ -53,7 +67,8 @@ const AppState = ({ children }) => {
         reservation,
         setReservation,
         restaurants,
-        setRestaurants
+        setRestaurants,
+        tab, setTab
       }}
     >
       {children}

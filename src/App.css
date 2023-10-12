@@ -46,16 +46,48 @@
   color: #F6921E;
 }
 
+.my-main {
+  height: 100vh;
+}
+
 .my-layout {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  flex-flow: column;
+  height: 100%;
+}
+
+.my-layout .my-header {
+  flex: 0 1 auto;
+}
+
+.my-layout .my-content {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.my-layout .my-footer {
+  flex: 0 1 40px;
 }
 
 .my-container {
   max-width: 1200px;
   width: 100%;
+}
+
+.my-center-vertiacal {
+  display: flex;
+  align-items: center;
+  padding-left: 0px!important;
+  padding-right: 0px!important;
+}
+
+.my-center-horizontal {
+  display: flex;
+  justify-content: center;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .color-free {
@@ -74,4 +106,12 @@
   width: 90%!important;
   max-width: 1100px!important;
   margin: auto;
+}
+
+.height-60{
+  height: 60px;
+}
+
+.my-food-item {
+  max-height: 456px;
 }

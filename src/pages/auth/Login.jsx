@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import LoginUI from '../../modelUI/Login';
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Main from '../../components/Main';
 // import authAPI from "../apis/authAPI";
 import {
     FaLock,
     FaRightToBracket,
 } from "react-icons/fa6";
+import { RESTAURANTS } from '../../utils/LoadImage';
 
 
 const Login = () => {
@@ -68,7 +69,7 @@ const Login = () => {
                                 <div className='col d-none d-md-block border-end'>
                                     <div className='d-flex align-items-center justify-content-center w-100 h-100'>
                                         <img
-                                            src="/loginBg.png"
+                                            src={`${RESTAURANTS[0]}`}
                                             alt="/loginBg.png"
                                             style={{
                                                 width: '70%',

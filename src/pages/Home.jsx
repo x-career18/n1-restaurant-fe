@@ -5,12 +5,18 @@ import FindRestaurant from '../components/FindRestaurant'
 
 const Home = () => {
     return (
-        <div>
-            <FindRestaurant />
-            <Slider />
-            <Footer />
+        <div className='my-layout'>
+            <div className='my-header'>
+                <FindRestaurant />
+            </div>
+            <div className='my-content'>
+                <Slider />
+            </div>
+            <div className="my-footer">
+                <Footer />
+            </div>
         </div>
     )
 }
 
-export default Home
+export default Home;

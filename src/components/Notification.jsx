@@ -2,7 +2,7 @@ import React from 'react'
 
 const Notification = () => {
   return (
-    <div className='bg-my-primary d-flex justify-content-center align-items-center'
+    <div className='my-header bg-my-primary d-flex justify-content-center align-items-center'
       style={{
         height: 30
       }}

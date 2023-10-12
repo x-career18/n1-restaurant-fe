@@ -44,4 +44,27 @@ const navLinkRight = [
     },
 ];
 
-export { navLinkLeft, navLinkRight };
+const customer = {
+    navLinkLeft: [
+        {
+            path: "/",
+            text: "HomePage"
+        },
+        {
+            path: "/menu",
+            text: "Menu"
+        },
+    ],
+    navLinkRight: [
+        {
+            path: "/login",
+            text: "Login"
+        },
+        {
+            path: "/register",
+            text: "Register"
+        },
+    ]
+}
+
+export { customer };
