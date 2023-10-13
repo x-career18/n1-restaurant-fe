@@ -3,15 +3,18 @@ import AppContext from "./AppContext";
 import { randomInt } from "../../utils/Random";
 import createRestaurant from "../../models/Restaurant";
 import createTable from "../../models/Table";
-import { RESTAURANTS } from "../../utils/LoadImage";
+import { FOOD, RESTAURANTS } from "../../utils/LoadImage";
 import { customer } from "../../modelUI/NavbarLink";
+import createFood from "../../models/Food";
 
 const AppState = ({ children }) => {
   const [tableList, setTableList] = useState([]);
   const [selectList, setSelectList] = useState([]);
   const [reservation, setReservation] = useState({});
   const [restaurants, setRestaurants] = useState([]);
-  const [tab, setTab] = useState({});
+  const [modeTab, setModeTab] = useState({});
+  const [foodOrder, setFoodOrder] = useState([]);
+  const [menu, setMenu] = useState([]);
 
   useEffect(() => {
     let tables = [];
@@ -27,7 +30,6 @@ const AppState = ({ children }) => {
       });
       tables.push(item);
     }
-    setTableList(tables);
 
     let restaurants = [];
     for (let index = 0; index < 5; index++) {
@@ -50,25 +52,39 @@ const AppState = ({ children }) => {
       });
       restaurants.push(item);
     }
+
+    let menu = [];
+    for (let index = 0; index < 50; index++) {
+      const item = createFood({
+        id: index,
+        foodCode: index,
+        img : FOOD[0],
+        foodName: "Sicilian",
+        category: "Piza",
+        description: "Ignite your taste buds with a fiery combination of spicy pepperoni, jalapeños, crushed red pepper flakes, and melted mozzarella cheese, delivering a kick with every bite.",
+        unit: "Chiếc",
+        price: 100,
+        discount: 0
+      });
+      menu.push(item);
+    }
+
+    setTableList(tables);
     setRestaurants(restaurants);
-
-    setTab(customer);
+    setModeTab(customer);
+    setMenu(menu);
   }, []);
-
-
 
   return (
     <AppContext.Provider
       value={{
-        tableList,
-        setTableList,
-        selectList,
-        setSelectList,
-        reservation,
-        setReservation,
-        restaurants,
-        setRestaurants,
-        tab, setTab
+        tableList, setTableList,
+        selectList, setSelectList,
+        reservation, setReservation,
+        restaurants, setRestaurants,
+        modeTab, setModeTab,
+        foodOrder, setFoodOrder,
+        menu, setMenu,
       }}
     >
       {children}

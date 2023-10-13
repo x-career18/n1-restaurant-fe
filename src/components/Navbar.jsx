@@ -7,8 +7,8 @@ import AppContext from "../contexts/AppContext/AppContext";
 
 const Navbar = () => {
   const isLogin = false;
-  const { tab } = useContext(AppContext);
-  if (isObjectEmpty(tab)) return;
+  const { modeTab } = useContext(AppContext);
+  if (isObjectEmpty(modeTab)) return;
 
   return (
     <div className="my-header text-my-color-navbar p-4 d-flex align-items-center border-bottom text-uppercase border-warning-subtle position-relative"

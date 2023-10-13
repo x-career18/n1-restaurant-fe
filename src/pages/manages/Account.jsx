@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import AccountModal from '../../modals/AccountModal';
 import Board from './Board';
 import { AccountBoard } from '../../modelUI/AccountBoard';
 
 const Account = () => {
     const [modalShow, setModalShow] = useState(false);
+
+    // Lấy danh sách user
+    // Thêm user
+    // Sửa user
+    // Xóa user
 
     let listObj = [];
     for (let index = 0; index < 50; index++) {
@@ -42,7 +45,7 @@ const Account = () => {
             <AccountModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                action="Tạo tài khoản"
+                action="c"
             />
         </>
     )

@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import Main from "../components/Main";
 import AppContext from "../contexts/AppContext/AppContext";
 import * as Yup from "yup";
 import TableDetail from "../modelUI/Table";

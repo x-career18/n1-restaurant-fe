@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import Table from 'react-bootstrap/Table';
+import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
 
-const Board = ({ tableHead = [], listObj = [] }) => {
+const Board = ({ tableHead = [], listObj = [], isAction = true }) => {
     return (
-        <Table responsive striped bordered>
+        <Table className='mx-0' responsive striped bordered>
             <thead>
                 <tr>
                     <th>#</th>
                     {tableHead.map((key, index) => (
                         <th key={index}>{key}</th>
                     ))}
-                    <th>Action</th>
+                    {
+                        isAction && <th>Action</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -24,7 +27,9 @@ const Board = ({ tableHead = [], listObj = [] }) => {
                                         <td key={index}>{item[key]}</td>
                                     ))
                                 }
-                                <td>Action</td>
+                                {
+                                    isAction && <td>{menuButtonAction()}</td>
+                                }
                             </tr>
                         )
                     })
@@ -32,6 +37,18 @@ const Board = ({ tableHead = [], listObj = [] }) => {
             </tbody>
         </Table>
     )
+}
+
+const menuButtonAction = () => {
+    return <div className='d-flex justify-content-start align-items-center gap-3'>
+        <span>
+            <FaRegPenToSquare className="text-info" />
+        </span>
+
+        <span >
+            <FaRegTrashCan className="text-danger" />
+        </span>
+    </div>
 }
 
 export default Board;

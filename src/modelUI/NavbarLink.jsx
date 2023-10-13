@@ -54,6 +54,10 @@ const customer = {
             path: "/menu",
             text: "Menu"
         },
+        {
+            path: "/checkreservation",
+            text: "CheckInfo"
+        },
     ],
     navLinkRight: [
         {

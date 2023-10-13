@@ -10,7 +10,10 @@ export const Food = {
     discount: 10
 };
 
-const createFood = ({ foodCode,
+const createFood = ({
+    id,
+    foodCode,
+    img,
     foodName,
     category,
     description,
@@ -18,7 +21,9 @@ const createFood = ({ foodCode,
     price,
     discount }) => {
     return {
+        id,
         foodCode,
+        img,
         foodName,
         category,
         description,
