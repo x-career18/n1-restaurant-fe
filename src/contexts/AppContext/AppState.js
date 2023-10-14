@@ -58,7 +58,7 @@ const AppState = ({ children }) => {
       const item = createFood({
         id: index,
         foodCode: index,
-        img : FOOD[0],
+        img: FOOD[0],
         foodName: "Sicilian",
         category: "Piza",
         description: "Ignite your taste buds with a fiery combination of spicy pepperoni, jalapeños, crushed red pepper flakes, and melted mozzarella cheese, delivering a kick with every bite.",
@@ -75,10 +75,26 @@ const AppState = ({ children }) => {
     setMenu(menu);
   }, []);
 
+  const refreshTableList = () => {
+    let newTableList = [
+      ...tableList,
+      createTable({
+        tableId: 5,
+        image: "/table/CN_6.png",
+        status: 1,
+        floor: '1',
+        tablenumber: "Bàn số 0",
+        numberSeat: "6",
+        shape: "Vuông"
+      })
+    ];
+    setTableList(newTableList);
+  };
+
   return (
     <AppContext.Provider
       value={{
-        tableList, setTableList,
+        tableList, setTableList, refreshTableList,
         selectList, setSelectList,
         reservation, setReservation,
         restaurants, setRestaurants,

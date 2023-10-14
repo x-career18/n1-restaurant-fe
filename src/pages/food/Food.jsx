@@ -36,7 +36,7 @@ const category = [
 ]
 
 
-const Food = ({ showDesc = true }) => {
+const Food = ({ showDesc = true, isModal = false }) => {
     const { foodOrder, setFoodOrder, menu } = useContext(AppContext);
     const [categoryActive, setCategoryActive] = useState("All");
 

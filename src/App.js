@@ -4,9 +4,6 @@ import './App.css'
 import routes from "./routes/routes";
 import { Route, Routes } from "react-router-dom";
 import AppState from "./contexts/AppContext/AppState";
-import Main from "./components/Main";
-import MainLayout from "./components/MainLayout";
-import Footer from "./components/Footer";
 
 function App() {
   return (

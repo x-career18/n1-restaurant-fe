@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import React from 'react'
 import Food from '../pages/food/Food';
 
-const MenuModal = ({ show, onHide , tableName}) => {
+const MenuModal = ({ show, onHide, tableName }) => {
     return (
         <Modal
             show={show}
@@ -20,7 +20,7 @@ const MenuModal = ({ show, onHide , tableName}) => {
             </Modal.Header>
             <Modal.Body>
                 {/* Hiển thị menu của nhà hàng */}
-                <Food showDesc={false}/>
+                <Food showDesc={false} />
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Close</Button>
