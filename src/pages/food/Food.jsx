@@ -37,12 +37,17 @@ const category = [
 
 
 const Food = ({ showDesc = true, isModal = false }) => {
-    const { foodOrder, setFoodOrder, menu } = useContext(AppContext);
+    const { foodOrder, setFoodOrder, menu, setMenu } = useContext(AppContext);
     const [categoryActive, setCategoryActive] = useState("All");
+    const [pageNo, setPageNo] = useState(1);
+    const [showMenu, setShowMenu] = useState(menu);
 
-    let foodList = [];
-    for (let index = 0; index < 50; index++) {
-        foodList.push(dataTemple);
+    const handleSelectPage = (pageNo) => {
+        let newMenu = [];
+        for (let index = 0; index < pageNo; index++) {
+            newMenu.push(menu[index]);
+        }
+        setShowMenu(newMenu);
     }
 
     const handleMenuClick = (e) => {
@@ -51,7 +56,6 @@ const Food = ({ showDesc = true, isModal = false }) => {
     };
 
     let items = [];
-
     category.map((item, index) => {
         items.push({
             label: item,
@@ -67,6 +71,9 @@ const Food = ({ showDesc = true, isModal = false }) => {
         onClick: handleMenuClick,
     };
 
+    // Phân trang: 1 trang có 12 món
+    const countPageTotal = Math.ceil(menu.length / 12);
+    
     return (
         <div className="row mx-0 h-100">
             {/* Phần trái */}
@@ -83,34 +90,68 @@ const Food = ({ showDesc = true, isModal = false }) => {
                         </Button>
                     </Dropdown>
                 </div>
-
-                <div className="row row-cols-3 row-cols-md-4 text-my-color-navbar mx-0 h-100 overflow-auto">
-                    {menu.map((item, index) => (
-                        <div key={index} className="col p-4">
-                            {item.img && (
-                                <img src={item.img} alt={item.img} className="img-fluid" />
-                            )}
-                            <div className="d-flex flex-column align-items-center ">
-                                <h1 className="fs-3 fw-bold text-uppercase">
-                                    {item.foodName}
-                                </h1>
-                                {
-                                    showDesc && <p className="p-2">
-                                        {item.description}
-                                    </p>
-                                }
-                                <span className="fs-3 fw-bold">
-                                    ${item.price}
-                                </span>
-                                <button type="button" className="bg-my-primary text-center text-white fs-4 p-2 rounded-1 border-0"
-                                    onClick={() => {
-                                        setFoodOrder([...foodOrder, item]);
-                                    }}>
-                                    Add to Cart
-                                </button>
-                            </div>
+                <div className='my-layout'>
+                    <div className="my-content">
+                        <div className="row row-cols-3 row-cols-md-4 text-my-color-navbar mx-0 h-100 overflow-auto">
+                            {showMenu.map((item, index) => (
+                                <div key={index} className="col p-4">
+                                    {item.img && (
+                                        <img src={item.img} alt={item.img} className="img-fluid" />
+                                    )}
+                                    <div className="d-flex flex-column align-items-center ">
+                                        <h1 className="fs-3 fw-bold text-uppercase">
+                                            {item.foodName}
+                                        </h1>
+                                        {
+                                            showDesc && <p className="p-2">
+                                                {item.description}
+                                            </p>
+                                        }
+                                        <span className="fs-3 fw-bold">
+                                            ${item.price}
+                                        </span>
+                                        <button type="button" className="bg-my-primary text-center text-white fs-4 p-2 rounded-1 border-0"
+                                            onClick={() => {
+                                                setFoodOrder([...foodOrder, item]);
+                                            }}>
+                                            Add to Cart
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
+                    <div className="my-footer d-flex justify-content-center">
+                        <div className='d-flex align-items-end'
+                            style={{
+                                height: 60
+                            }}>
+                            <nav aria-label="Page navigation example">
+                                <ul className="pagination">
+                                    <li className={`page-item ${pageNo == 0 ? "disabled" : ""}`}>
+                                        <a className="page-link" href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {
+                                        [...Array(countPageTotal)].map((_, index) => {
+                                            return <li className="page-item" onClick={() => {
+                                                handleSelectPage(index+1);
+                                                setPageNo(index);
+                                            }}>
+                                                <a className="page-link" href="#">{index + 1}</a>
+                                            </li>
+                                        })
+                                    }
+                                    <li className={`page-item ${pageNo == countPageTotal-1 ? "disabled" : ""}`}>
+                                        <a className="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
             {/* Phần phải */}

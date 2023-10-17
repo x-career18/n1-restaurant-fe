@@ -15,6 +15,7 @@ const AppState = ({ children }) => {
   const [modeTab, setModeTab] = useState({});
   const [foodOrder, setFoodOrder] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [combo, setCombo] = useState([]);
 
   useEffect(() => {
     let tables = [];
@@ -32,13 +33,13 @@ const AppState = ({ children }) => {
     }
 
     let restaurants = [];
-    for (let index = 0; index < 5; index++) {
+    for (let index = 0; index < 4; index++) {
       const item = createRestaurant({
         name: `Cơ sở số ${index}`,
         address: `Địa chỉ số ${index}`,
         openTime: "Fri Oct 06 2023 21:10:33",
         closeTime: "Fri Oct 06 2023 21:10:33",
-        description: `Nhà hàng ngon số ${index}`,
+        description: `Ẩm thực tại Charger nổi bật với đa dạng các món ngon, đưa cuộc nhậu lên một tầm cao mới. Trong không gian hiện đại với phong cách decor camping độc đáo, âm nhạc bắt tai, Charger hứa hẹn sẽ mang đến những  trải nghiệm ăn chơi tiệc tùng đỉnh cao có 1-0-2.`,
         images: [
           `${RESTAURANTS[0]}`,
           `${RESTAURANTS[1]}`,
@@ -69,10 +70,23 @@ const AppState = ({ children }) => {
       menu.push(item);
     }
 
+    let combo = [];
+    for (let index = 0; index < 3; index++) {
+      const item = {
+        "comboCategory": "set",
+        "comboName": `${randomInt(500, 200)}k`,
+        "comboDescription": "Gọi thả ga, ăn thật đã",
+        'comboCount': `${randomInt(100, 10)} món`,
+        "comboImage": FOOD[0]
+      };
+      combo.push(item);
+    }
+
     setTableList(tables);
     setRestaurants(restaurants);
     setModeTab(customer);
     setMenu(menu);
+    setCombo(combo);
   }, []);
 
   const refreshTableList = () => {
@@ -101,6 +115,7 @@ const AppState = ({ children }) => {
         modeTab, setModeTab,
         foodOrder, setFoodOrder,
         menu, setMenu,
+        combo,
       }}
     >
       {children}

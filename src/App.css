@@ -38,6 +38,12 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  div.example {
+    font-size: 30px;
+  }
+}
+
 .bg-my-primary {
   background-color: #F6921E;
 }
@@ -72,7 +78,7 @@
 }
 
 .my-container {
-  max-width: 1200px;
+  max-width: 75%;
   width: 100%;
 }
 
