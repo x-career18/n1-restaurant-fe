@@ -73,11 +73,20 @@ const Food = ({ showDesc = true, isModal = false }) => {
 
     // Phân trang: 1 trang có 12 món
     const countPageTotal = Math.ceil(menu.length / 12);
-    
+    let rowCount = []
+    for (let index = 0; index < 9; index += 3) {
+        let item = [];
+        for (let i = 0; i < 4; i++) {
+            const element = menu[index + i];
+            item.push(element);
+        }
+        rowCount.push(item);
+    }
+    console.log(rowCount)
     return (
         <div className="row mx-0 h-100">
             {/* Phần trái */}
-            <div className="col h-100 position-relative">
+            <div className="col h-100 position-relative px-0">
                 <div className='position-absolute top-0 start-0 p-4'>
                     <Dropdown
                         menu={menuProps} trigger={['click']}
@@ -92,34 +101,46 @@ const Food = ({ showDesc = true, isModal = false }) => {
                 </div>
                 <div className='my-layout'>
                     <div className="my-content">
-                        <div className="row row-cols-3 row-cols-md-4 text-my-color-navbar mx-0 h-100 overflow-auto">
-                            {showMenu.map((item, index) => (
-                                <div key={index} className="col p-4">
-                                    {item.img && (
-                                        <img src={item.img} alt={item.img} className="img-fluid" />
-                                    )}
-                                    <div className="d-flex flex-column align-items-center ">
-                                        <h1 className="fs-3 fw-bold text-uppercase">
-                                            {item.foodName}
-                                        </h1>
+                        {
+                            rowCount.map((item, index) => {
+                                return (
+                                    <div key={index} className="row mx-0">
                                         {
-                                            showDesc && <p className="p-2">
-                                                {item.description}
-                                            </p>
+                                            item.map((item1, index1) => {
+                                                if (!item1) {
+                                                    return (
+                                                        <div key={index + index1 + 1} className="col p-3" />
+                                                    )
+                                                }
+
+                                                return (
+                                                    <div key={index + index1 + 1} className="col p-3">
+                                                        {item1.img && (
+                                                            <img src={item1.img} alt={item1.img} className="img-fluid" />
+                                                        )}
+                                                        <div className="d-flex flex-column align-items-center ">
+                                                            <h1 className="fs-3 fw-bold text-uppercase">
+                                                                {item1.foodName}
+                                                            </h1>
+                                                            <span className="fs-3 fw-bold">
+                                                                ${item1.price}
+                                                            </span>
+                                                            <button type="button" className="bg-my-primary text-center text-white fs-5 p-2 rounded-1 border-0"
+                                                                onClick={() => {
+                                                                    setFoodOrder([...foodOrder, item1]);
+                                                                }}>
+                                                                Add Cart
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
                                         }
-                                        <span className="fs-3 fw-bold">
-                                            ${item.price}
-                                        </span>
-                                        <button type="button" className="bg-my-primary text-center text-white fs-4 p-2 rounded-1 border-0"
-                                            onClick={() => {
-                                                setFoodOrder([...foodOrder, item]);
-                                            }}>
-                                            Add to Cart
-                                        </button>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                )
+                            })
+
+                        }
                     </div>
                     <div className="my-footer d-flex justify-content-center">
                         <div className='d-flex align-items-end'
@@ -129,24 +150,26 @@ const Food = ({ showDesc = true, isModal = false }) => {
                             <nav aria-label="Page navigation example">
                                 <ul className="pagination">
                                     <li className={`page-item ${pageNo == 0 ? "disabled" : ""}`}>
-                                        <a className="page-link" href="#" aria-label="Previous">
+                                        <div className="page-link" aria-label="Previous">
                                             <span aria-hidden="true">&laquo;</span>
-                                        </a>
+                                        </div>
                                     </li>
                                     {
                                         [...Array(countPageTotal)].map((_, index) => {
-                                            return <li className="page-item" onClick={() => {
-                                                handleSelectPage(index+1);
-                                                setPageNo(index);
-                                            }}>
-                                                <a className="page-link" href="#">{index + 1}</a>
+                                            return <li
+                                                key={index + showMenu.length}
+                                                className="page-item" onClick={() => {
+                                                    handleSelectPage(index + 1);
+                                                    setPageNo(index);
+                                                }}>
+                                                <div className="page-link"  >{index + 1}</div>
                                             </li>
                                         })
                                     }
-                                    <li className={`page-item ${pageNo == countPageTotal-1 ? "disabled" : ""}`}>
-                                        <a className="page-link" href="#" aria-label="Next">
+                                    <li className={`page-item ${pageNo == countPageTotal - 1 ? "disabled" : ""}`}>
+                                        <div className="page-link" aria-label="Next">
                                             <span aria-hidden="true">&raquo;</span>
-                                        </a>
+                                        </div>
                                     </li>
                                 </ul>
                             </nav>
@@ -156,7 +179,7 @@ const Food = ({ showDesc = true, isModal = false }) => {
             </div>
             {/* Phần phải */}
             <div className="col-4 border-start h-100">
-                <FoodOrder />
+                <FoodOrder isModal={isModal}/>
             </div>
         </div>
     )

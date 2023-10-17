@@ -62,7 +62,7 @@ const AppState = ({ children }) => {
         img: FOOD[0],
         foodName: "Sicilian",
         category: "Piza",
-        description: "Ignite your taste buds with a fiery combination of spicy pepperoni, jalapeños, crushed red pepper flakes, and melted mozzarella cheese, delivering a kick with every bite.",
+        description: "",
         unit: "Chiếc",
         price: 100,
         discount: 0

@@ -8,10 +8,10 @@ const MenuModal = ({ show, onHide, tableName }) => {
         <Modal
             show={show}
             onHide={onHide}
-            dialogClassName="modal-90"
             aria-labelledby="contained-modal-title-vcenter"
             centered
             scrollable={true}
+            fullscreen
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -20,7 +20,7 @@ const MenuModal = ({ show, onHide, tableName }) => {
             </Modal.Header>
             <Modal.Body>
                 {/* Hiển thị menu của nhà hàng */}
-                <Food showDesc={false} />
+                <Food showDesc={false} isModal={true}/>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Close</Button>
