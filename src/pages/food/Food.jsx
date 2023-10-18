@@ -83,6 +83,7 @@ const Food = ({ showDesc = true, isModal = false }) => {
         rowCount.push(item);
     }
     console.log(rowCount)
+    
     return (
         <div className="row mx-0 h-100">
             {/* Phần trái */}

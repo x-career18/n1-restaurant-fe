@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import AppContext from "../../contexts/AppContext/AppContext";
-import Carousel from 'react-bootstrap/Carousel';
+import Carousel from "react-bootstrap/Carousel";
 import RestaurantDetailModal from "../../modals/RestaurantDetailModal";
 
 const Slider = () => {
@@ -15,15 +15,15 @@ const Slider = () => {
 
   return (
     <>
-      <div className="d-flex justify-content-center">
-        <Carousel
-          activeIndex={indexCarousel}
-          onSelect={handleSelect}
-          interval={3000}
-          className="w-100"
-        >
-          {
-            restaurants.map((item, index) => {
+      <div className="row justify-content-center">
+        <div className="col-12 col-lg-10">
+          <Carousel
+            activeIndex={indexCarousel}
+            onSelect={handleSelect}
+            interval={3000}
+            className="w-100"
+          >
+            {restaurants.map((item, index) => {
               return (
                 <Carousel.Item
                   key={index}
@@ -32,7 +32,6 @@ const Slider = () => {
                     e.preventDefault();
                     setSelect(item);
                     setModalShow(true);
-
                   }}
                 >
                   <button className="w-100 border-0">
@@ -40,20 +39,20 @@ const Slider = () => {
                       src={item.images[index]}
                       alt={item.images[index]}
                       style={{
-                        width: '100%',
-                        height: 700
+                        width: "100%",
+                        height: 700,
                       }}
                     />
                   </button>
-                  < Carousel.Caption className="text-body">
+                  {/* < Carousel.Caption className="text-body">
                     <h3>{item.name}</h3>
                     <p>Địa chỉ: {item.address}.</p>
-                  </Carousel.Caption>
+                  </Carousel.Caption> */}
                 </Carousel.Item>
-              )
-            })
-          }
-        </Carousel >
+              );
+            })}
+          </Carousel>
+        </div>
       </div>
       <RestaurantDetailModal
         show={modalShow}

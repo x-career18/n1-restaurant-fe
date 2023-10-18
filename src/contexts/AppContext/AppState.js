@@ -41,14 +41,12 @@ const AppState = ({ children }) => {
         closeTime: "Fri Oct 06 2023 21:10:33",
         description: `Ẩm thực tại Charger nổi bật với đa dạng các món ngon, đưa cuộc nhậu lên một tầm cao mới. Trong không gian hiện đại với phong cách decor camping độc đáo, âm nhạc bắt tai, Charger hứa hẹn sẽ mang đến những  trải nghiệm ăn chơi tiệc tùng đỉnh cao có 1-0-2.`,
         images: [
-          `${RESTAURANTS[0]}`,
-          `${RESTAURANTS[1]}`,
-          `${RESTAURANTS[0]}`,
-          `${RESTAURANTS[1]}`,
-          `${RESTAURANTS[0]}`,
-          `${RESTAURANTS[1]}`,
-          `${RESTAURANTS[0]}`,
-          `${RESTAURANTS[1]}`,
+          RESTAURANTS[2],
+          RESTAURANTS[3],
+          RESTAURANTS[4],
+          RESTAURANTS[2],
+          RESTAURANTS[3],
+          RESTAURANTS[4],
         ]
       });
       restaurants.push(item);
