@@ -9,7 +9,7 @@ const Home = () => {
     return (
         <div className='my-layout'>
             <div className='my-content my-center-vertiacal'>
-                <div className='my-container'>
+                <div className='container'>
                     <FindRestaurant />
                     <Slider />
                     {/* Container combo */}
@@ -26,6 +26,27 @@ const Home = () => {
             </div>
         </div>
     )
+}
+
+const HomeV1 = () => {
+    return <div className='my-layout'>
+        <div className='my-content my-center-vertiacal'>
+            <div className='my-container'>
+                <FindRestaurant />
+                <Slider />
+                {/* Container combo */}
+                <Combo />
+                {/* Container List Restaurant */}
+                <h3 className='text-center'>
+                    Danh sách các cơ sở
+                </h3>
+                <Restaurants />
+            </div>
+        </div>
+        <div className="my-footer">
+            <Footer />
+        </div>
+    </div>;
 }
 
 export default Home;

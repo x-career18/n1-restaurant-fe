@@ -2,9 +2,14 @@ import React from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { InputNumber } from "antd";
 
-const FoodOrderItem = ({ item, index }) => {
+const FoodOrderItem = ({ item, index, handeCount, handeRemove }) => {
   const onChange = (value) => {
-    console.log("changed", value);
+    item['count'] = value;
+    handeCount(index, item);
+  };
+
+  const onRemove = () => {
+    handeRemove(index);
   };
 
   return (
@@ -27,7 +32,7 @@ const FoodOrderItem = ({ item, index }) => {
       </div>
       {/* Nút xóa */}
       <div className="col d-flex align-items-center">
-        <FaRegTrashCan className="text-danger" />
+        <FaRegTrashCan className="text-danger" onClick={onRemove} />
       </div>
       <hr className="mt-3" />
     </div>

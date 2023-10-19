@@ -3,7 +3,12 @@ import Button from 'react-bootstrap/Button';
 import React from 'react'
 import Food from '../pages/food/Food';
 
-const MenuModal = ({ show, onHide, tableName }) => {
+const MenuModal = ({ show, onHide, tableName , isCanel}) => {
+    const handleCanel = () => {
+        onHide();
+        isCanel();
+    }
+
     return (
         <Modal
             show={show}
@@ -23,7 +28,7 @@ const MenuModal = ({ show, onHide, tableName }) => {
                 <Food showDesc={false} isModal={true}/>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={onHide}>Close</Button>
+                <Button onClick={handleCanel}>Close</Button>
                 <Button onClick={() => {
                     onHide();
                 }}>Đặt món</Button>

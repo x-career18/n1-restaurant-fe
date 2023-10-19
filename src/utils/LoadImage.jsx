@@ -8,7 +8,11 @@ const RESTAURANTS = [
 ];
 
 const FOOD = [
-    BASE_URL + "food/p3_mttbuj.png"
+    BASE_URL + "food/p3_mttbuj.png",
+    BASE_URL + "food/p11_m8vddl.png",
+    BASE_URL + "/food/p12_gouhem.png",
+    BASE_URL + "/food/p8_cyizm4.png",
+    BASE_URL + "/food/p1_mgoiwz.png",
 ]
 
 export { RESTAURANTS, FOOD };

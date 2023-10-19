@@ -6,6 +6,7 @@ import createTable from "../../models/Table";
 import { FOOD, RESTAURANTS } from "../../utils/LoadImage";
 import { customer } from "../../modelUI/NavbarLink";
 import createFood from "../../models/Food";
+import { category } from "../../models/CategoryFood";
 
 const AppState = ({ children }) => {
   const [tableList, setTableList] = useState([]);
@@ -54,15 +55,16 @@ const AppState = ({ children }) => {
 
     let menu = [];
     for (let index = 0; index < 50; index++) {
+      const categoryId = randomInt(4, 1);
       const item = createFood({
         id: index,
         foodCode: index,
-        img: FOOD[0],
-        foodName: "Sicilian",
-        category: "Piza",
+        img: FOOD[categoryId],
+        foodName: categoryId-1,
+        category: category[categoryId],
         description: "",
         unit: "Chiếc",
-        price: 100,
+        price: randomInt(100, 10),
         discount: 0
       });
       menu.push(item);
@@ -102,6 +104,8 @@ const AppState = ({ children }) => {
     ];
     setTableList(newTableList);
   };
+
+  console.log("AppState");
 
   return (
     <AppContext.Provider

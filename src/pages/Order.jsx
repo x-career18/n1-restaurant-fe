@@ -36,9 +36,9 @@ const Order = () => {
     tableActiveList = tableList.filter((item) => item.status === 3);
 
     return (
-        <Main>
+        <>
             {contextHolder}
-            <div className="container h-100">
+            <div className="container">
                 <div
                     className="mt-2 row align-items-center"
                     style={{
@@ -47,7 +47,7 @@ const Order = () => {
                 >
                     <h2 className="col px-4">Mời chọn bàn để đặt món</h2>
                 </div>
-                <div className="row row-cols-4">
+                <div className="row row-cols-3 row-cols-lg-4">
                     {tableActiveList.map((item, index) => {
                         const styleDefault =
                             "ratio ratio-1x1 d-flex flex-column align-items-center justify-content-center p-3 fs-4 border-0";
@@ -82,9 +82,9 @@ const Order = () => {
             <MenuModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                tableName={selectTableOrder}
+                tableName={"Bàn số "+selectTableOrder}
             />
-        </Main>
+        </>
     );
 };
 

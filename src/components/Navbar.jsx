@@ -17,7 +17,7 @@ const Navbar = () => {
         height: 70,
       }}
     >
-        <div className="d-flex align-items-center justify-content-between my-container">
+        <div className="d-flex align-items-center justify-content-between container">
           {/* Left side */}
           <div className="fs-3 fw-bold text-center">
             Brother Restaurant
@@ -34,7 +34,7 @@ const Navbar = () => {
                 }}
               >
                 <img src="/phone.png" alt="phone.png" width={20} height={20} />
-                <span>099999999</span>
+                <span>091 999 9999</span>
               </div>
               {/* Danh sách nav bar */}
               <div className="d-flex justify-content-center align-items-center gap-4">

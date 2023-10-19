@@ -4,6 +4,7 @@ import { Button, Dropdown, Space } from 'antd';
 import { FaBowlFood, FaAngleDown } from "react-icons/fa6";
 import FoodOrder from './FoodOrder';
 import AppContext from '../../contexts/AppContext/AppContext';
+import { category } from '../../models/CategoryFood';
 
 const dataTemple = {
     id: 1,
@@ -27,33 +28,58 @@ const dataTemple = {
     ],
 }
 
-const category = [
-    "All",
-    'Đồ nướng',
-    'Đồ sào',
-    'Đồ thui',
-    'Đồ uống',
-]
-
-
 const Food = ({ showDesc = true, isModal = false }) => {
-    const { foodOrder, setFoodOrder, menu, setMenu } = useContext(AppContext);
+    const { foodOrder, setFoodOrder, menu } = useContext(AppContext);
     const [categoryActive, setCategoryActive] = useState("All");
     const [pageNo, setPageNo] = useState(1);
-    const [showMenu, setShowMenu] = useState(menu);
+    const [countPageTotal, setCountPageTotal] = useState(0);
+    const [showMenu, setShowMenu] = useState([]);
 
+    // Load lần đầu
+    useEffect(() => {
+        handleShowMenu(1);
+    }, [menu]);
+
+    // Cập nhật menu khi chọn category
+    useEffect(() => {
+        handleShowMenu(1);
+    }, [categoryActive]);
+
+    // Cập nhật menu khi chọn page
+    useEffect(() => {
+        handleShowMenu(pageNo);
+    }, [pageNo]);
+
+    // Phân trang: 1 trang có 12 món. Dữ liệu giả
     const handleSelectPage = (pageNo) => {
+        setPageNo(pageNo);
+    }
+
+    const handleShowMenu = (pageNo) => {
+        if (menu?.length == 0) return;
         let newMenu = [];
-        for (let index = 0; index < pageNo; index++) {
-            newMenu.push(menu[index]);
+        const filterList = categoryActive != "All" ? menu.filter((e) => e.category == categoryActive) : menu;
+        const startIndex = 12 * (pageNo - 1);
+        for (let index = 0; index < 12; index++) {
+            newMenu.push(filterList[index + startIndex]);
         }
+        const count = Math.ceil(filterList.length / 12);
+        setCountPageTotal(count);
         setShowMenu(newMenu);
+        // console.log("handleShowMenu", categoryActive, pageNo, newMenu);
     }
 
     const handleMenuClick = (e) => {
-        setCategoryActive(category[e.key]);
-        console.log('click', e);
+        const categoryChoose = category[e.key];
+        setCategoryActive(categoryChoose);
+        // console.log("handleMenuClick", categoryChoose);
     };
+
+    const handleOnClickFoodItem = (item) => {
+        if (foodOrder.find((e) => e.foodCode == item.foodCode)) return;
+        item["count"] = 1;
+        setFoodOrder([...foodOrder, item]);
+    }
 
     let items = [];
     category.map((item, index) => {
@@ -71,119 +97,103 @@ const Food = ({ showDesc = true, isModal = false }) => {
         onClick: handleMenuClick,
     };
 
-    // Phân trang: 1 trang có 12 món
-    const countPageTotal = Math.ceil(menu.length / 12);
-    let rowCount = []
-    for (let index = 0; index < 9; index += 3) {
-        let item = [];
-        for (let i = 0; i < 4; i++) {
-            const element = menu[index + i];
-            item.push(element);
-        }
-        rowCount.push(item);
-    }
-    console.log(rowCount)
-    
+    // console.log("Food showMenu", showMenu);
+    // console.log("Food countPageTotal", countPageTotal);
+
     return (
         <div className="row mx-0 h-100">
             {/* Phần trái */}
             <div className="col h-100 position-relative px-0">
                 <div className='position-absolute top-0 start-0 p-4'>
-                    <Dropdown
-                        menu={menuProps} trigger={['click']}
-                    >
-                        <Button size={"large"}>
-                            <Space>
-                                {categoryActive}
-                                <FaAngleDown />
-                            </Space>
-                        </Button>
-                    </Dropdown>
+                    {CategoryFood(menuProps, categoryActive)}
                 </div>
                 <div className='my-layout'>
                     <div className="my-content">
-                        {
-                            rowCount.map((item, index) => {
-                                return (
-                                    <div key={index} className="row mx-0">
-                                        {
-                                            item.map((item1, index1) => {
-                                                if (!item1) {
-                                                    return (
-                                                        <div key={index + index1 + 1} className="col p-3" />
-                                                    )
-                                                }
-
-                                                return (
-                                                    <div key={index + index1 + 1} className="col p-3">
-                                                        {item1.img && (
-                                                            <img src={item1.img} alt={item1.img} className="img-fluid" />
-                                                        )}
-                                                        <div className="d-flex flex-column align-items-center ">
-                                                            <h1 className="fs-3 fw-bold text-uppercase">
-                                                                {item1.foodName}
-                                                            </h1>
-                                                            <span className="fs-3 fw-bold">
-                                                                ${item1.price}
-                                                            </span>
-                                                            <button type="button" className="bg-my-primary text-center text-white fs-5 p-2 rounded-1 border-0"
-                                                                onClick={() => {
-                                                                    setFoodOrder([...foodOrder, item1]);
-                                                                }}>
-                                                                Add Cart
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                )
-                            })
-
-                        }
+                        <div className="row row-cols-3 row-cols-lg-4 mx-0">
+                            {
+                                showMenu.map((item, index) => {
+                                    return FoodItem(index, item, handleOnClickFoodItem)
+                                })
+                            }
+                        </div>
                     </div>
                     <div className="my-footer d-flex justify-content-center">
-                        <div className='d-flex align-items-end'
-                            style={{
-                                height: 60
-                            }}>
-                            <nav aria-label="Page navigation example">
-                                <ul className="pagination">
-                                    <li className={`page-item ${pageNo == 0 ? "disabled" : ""}`}>
-                                        <div className="page-link" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </div>
-                                    </li>
-                                    {
-                                        [...Array(countPageTotal)].map((_, index) => {
-                                            return <li
-                                                key={index + showMenu.length}
-                                                className="page-item" onClick={() => {
-                                                    handleSelectPage(index + 1);
-                                                    setPageNo(index);
-                                                }}>
-                                                <div className="page-link"  >{index + 1}</div>
-                                            </li>
-                                        })
-                                    }
-                                    <li className={`page-item ${pageNo == countPageTotal - 1 ? "disabled" : ""}`}>
-                                        <div className="page-link" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
+                        {Pagination(countPageTotal, handleSelectPage, pageNo)}
                     </div>
                 </div>
             </div>
             {/* Phần phải */}
             <div className="col-4 border-start h-100">
-                <FoodOrder isModal={isModal}/>
+                <FoodOrder isModal={isModal} />
             </div>
         </div>
     )
+}
+
+const Pagination = (totalPage, handleSelectPage, pageNo) => {
+    return <div className='d-flex align-items-end'
+        style={{
+            height: 60
+        }}>
+        <nav aria-label="Page navigation example">
+            <ul className="pagination">
+                <li className={`page-item ${pageNo <= 1 ? "disabled" : ""}`}>
+                    <div className="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </div>
+                </li>
+                {[...Array(totalPage)].map((_, index) => {
+                    return <li
+                        key={index}
+                        className="page-item" onClick={() => {
+                            handleSelectPage(index + 1);
+                        }}>
+                        <div className="page-link">{index + 1}</div>
+                    </li>;
+                })}
+                <li className={`page-item ${pageNo >= totalPage ? "disabled" : ""}`}>
+                    <div className="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>;
+}
+
+const CategoryFood = (menuProps, categoryActive) => {
+    return <Dropdown
+        overlayStyle={{
+            zIndex: 1100
+        }}
+        menu={menuProps} trigger={['click']}
+    >
+        <Button size={"large"}>
+            <Space>
+                {categoryActive}
+                <FaAngleDown />
+            </Space>
+        </Button>
+    </Dropdown>
+}
+
+const FoodItem = (index, item, onClick) => {
+    if (!item) return;
+    return <div key={index} className="col p-3">
+        <img src={item.img} alt={item.img} className="img-fluid" />
+        <div className="d-flex flex-column align-items-center ">
+            <h5 className="fs-5 fw-bold text-uppercase">
+                {item.foodName}
+            </h5>
+            <span className="fs-5 fw-bold">
+                ${item.price}
+            </span>
+            <button type="button" className="bg-my-primary text-center text-white fs-5 p-2 rounded-1 border-0"
+                onClick={() => onClick(item)}>
+                Add Cart
+            </button>
+        </div>
+    </div>;
 }
 
 export default Food

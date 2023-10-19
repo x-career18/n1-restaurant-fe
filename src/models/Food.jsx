@@ -1,6 +1,6 @@
 
 // Thể hiện thông tin món ăn
-export const Food = {
+const Food = {
     foodCode: '',
     foodName: "",
     category: "",
@@ -9,6 +9,13 @@ export const Food = {
     price: 10,
     discount: 10
 };
+
+const FoodName = [
+    'Đồ nướng',
+    'Đồ sào',
+    'Đồ thui',
+    'Đồ uống',
+];
 
 const createFood = ({
     id,
@@ -24,7 +31,7 @@ const createFood = ({
         id,
         foodCode,
         img,
-        foodName,
+        foodName: FoodName[foodName],
         category,
         description,
         unit,
