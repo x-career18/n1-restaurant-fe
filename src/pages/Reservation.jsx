@@ -6,15 +6,20 @@ import { capitalizeFirstLetter } from "../utils/CapitalizeFirstLetter";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { FormOrderTable } from "../modelUI/FormOrderTable";
 import { useNavigate } from "react-router-dom";
-import { DatePicker, Input } from "antd";
+import { DatePicker, Input, notification } from "antd";
 import MenuModal from "../modals/MenuModal";
 import FoodOrder from "./food/FoodOrder";
+import reservationAPI from "../apis/reservationAPI";
+import { getDate } from "../utils/DateUtil";
+import dayjs from "dayjs";
 
 const Reservation = () => {
   const { reservation, setReservation, selectList, setSelectList, foodOrder, setFoodOrder } =
     useContext(AppContext);
+  const [mode, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+  const [checkInTime, setCheckInTime] = useState({});
   const navigate = useNavigate();
   const initialValues = {
     fullName: "",
@@ -32,64 +37,87 @@ const Reservation = () => {
     email: Yup.string().required("Email is required"),
   });
 
-  function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-    setSelectList([]);
-    setReservation({});
-    navigate("/");
+  TableDetail.tableId = selectList.sort().join(", ");
+
+  async function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
+    setLoading(true);
+    // Lấy thông tin của foodOrder
+    let foodOrderList = [];
+
+    // Tính expiredTime từ checkInTime
+    const expiredTime = checkInTime.add(30, 'minutes');
+
+    // Tạo thông tin để gửi
+    const newReservation = {
+      fullname: fields.fullname,
+      phoneNo: fields.phone,
+      restaurantId: reservation.restaurantId,
+      tableId: [TableDetail.tableId],
+      tableCount: TableDetail.tableId.length,
+      order: foodOrderList,
+      checkinTime: checkInTime.$d,
+      expiredTime: expiredTime.$d,
+    }
+
+    // Call API
+    const response = await reservationAPI.create(newReservation);
+
+    // Check response
+    if (response.success) {
+      // Thông báo thành công
+      openNotificationWithIcon(
+        "success",
+        "Bạn đã đặt bàn thành công.!"
+      );
+      // reset toàn bộ
+      setSelectList([]);
+      setReservation({});
+      navigate("/");
+    } else {
+      // Thông báo thất bại
+      openNotificationWithIcon(
+        "error",
+        "Đặt bàn không thành công.!"
+      );
+    }
+    setLoading(false);
   }
 
-  //   async function createCustomer(fields, setSubmitting, resetForm) {
-  //     resetForm();
-  //     const newCustomer = {
-  //       ...fields,
-  //       kiot_id: user.kiot_id,
-  //       username: user.username,
-  //       gender: fields.gender === "male" ? 1 : fields.gender === "female" ? 2 : 3,
-  //     };
-  //     setLoading(true);
-  //     await customerAPI
-  //       .create(newCustomer)
-  //       .then(() => {
-  //         onUpdateCustomer({
-  //           status: 1,
-  //           message: "Customer is added successfully!",
-  //         });
-  //         handleClose();
-  //       })
-  //       .catch((error) => {
-  //         setSubmitting(false);
-  //         setLoading(false);
-  //         onUpdateCustomer({ status: 0, message: error.response.data.error });
-  //         handleClose();
-  //         console.log(error.response.data.error);
-  //       })
-  //       .finally(setLoading(false));
-  //   }
+  const openNotificationWithIcon = (type, message) => {
+    mode[type]({
+      message: "Thông báo",
+      description: message,
+    });
+  };
 
   const onChange = (value, dateString) => {
     console.log("Selected Time: ", value);
-    console.log("Formatted Selected Time: ", dateString);
-    console.log("Time $d: ", value.$d);
+    // console.log("Formatted Selected Time: ", dateString);
+    // console.log("Time $d: ", value.$d);
+    let expiredTime = value.add(30, 'minutes');
+    console.log("expiredTime", expiredTime);
+    setCheckInTime(value);
   };
 
   const onOk = (value) => {
     console.log("onOk: ", value);
+    setCheckInTime(value.$d)
   };
 
   const handleOrder = () => {
     setModalShow(true);
   };
 
-  TableDetail.tableId = selectList.sort().join(", ");
-  console.log("Reservation", foodOrder.length);
+  // console.log("Reservation", foodOrder.length);
+
   return (
     <div className="container mt-5">
+      {contextHolder}
       <h1>Thông tin đặt bàn</h1>
       <hr />
       {/* Thông tin của nhà hàng */}
       <div className="form-group row   mt-2">
         <label className="col fs-5 ">
-          {" "}
           {capitalizeFirstLetter("Tên nhà hàng")}
         </label>
         <label className="col fs-5 "> {reservation.restaurantId}</label>
