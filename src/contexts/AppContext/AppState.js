@@ -34,8 +34,9 @@ const AppState = ({ children }) => {
     }
 
     let restaurants = [];
-    for (let index = 0; index < 4; index++) {
+    for (let index = 1; index <= 4; index++) {
       const item = createRestaurant({
+        id: index,
         name: `Cơ sở số ${index}`,
         address: `Địa chỉ số ${index}`,
         openTime: "Fri Oct 06 2023 21:10:33",
@@ -60,7 +61,7 @@ const AppState = ({ children }) => {
         id: index,
         foodCode: index,
         img: FOOD[categoryId],
-        foodName: categoryId-1,
+        foodName: categoryId - 1,
         category: category[categoryId],
         description: "",
         unit: "Chiếc",

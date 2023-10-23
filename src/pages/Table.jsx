@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import AppContext from "../contexts/AppContext/AppContext";
 import { notification } from "antd";
 import Reservation from "./Reservation";
+import createTable from "../models/Table";
+import { randomInt } from "../utils/Random";
 
 const colorStatus = {
   "1": "color-free",
@@ -16,15 +18,40 @@ const borderSelect = {
   false: "border-0"
 }
 
+// Hiển thị sơ đồ bàn của nhà hàng được chọn
 const Table = () => {
   const { tableList, refreshTableList, selectList, setSelectList } = useContext(AppContext);
   const [mode, contextHolder] = notification.useNotification(); // success info warning error
-  const [filterList, setFilterList] = useState([]); // Lọc bàn theo yêu cầu (trống, đã đặt, đang hoạt động)
+  const [filterTableStatusList, setfilterTableStatusList] = useState([]); // Lọc bàn theo yêu cầu (trống, đã đặt, đang hoạt động)
   const [modeFilter, setModeFilter] = useState("All"); // Lọc bàn theo yêu cầu (trống, đã đặt, đang hoạt động)
+  const [tableMap, seTableMap] = useState([]);
+
+  let restaurantsId = 0;
+
+  // Lấy dữ liệu bàn của nhà hàng
+  useEffect(() => {
+    restaurantsId = localStorage.getItem("restaurantsId");
+    let tables = [];
+    if (restaurantsId == 1) {
+      for (let index = 1; index <= 50; index++) {
+        const item = createTable({
+          tableId: index,
+          image: "/table/CN_6.png",
+          status: randomInt(3, 1),
+          floor: '1',
+          tablenumber: `Bàn số ${index}`,
+          numberSeat: "6",
+          shape: "Vuông"
+        });
+        tables.push(item);
+      }
+    }
+    seTableMap(tables);
+  }, []);
 
   useEffect(() => {
     filterStatusTable(modeFilter);
-  }, [tableList]);
+  }, [tableMap]);
 
   const handleChooseTable = (table) => {
     // Kiểm tra trạng thái bàn
@@ -56,17 +83,19 @@ const Table = () => {
   const filterStatusTable = (status) => {
     let newList = [];
     if (status === "empty") {
-      newList = tableList.filter((e) => e.status === 1);
+      newList = tableMap.filter((e) => e.status === 1);
     } else if (status === "booked") {
-      newList = tableList.filter((e) => e.status === 2);
+      newList = tableMap.filter((e) => e.status === 2);
     } else if (status === "active") {
-      newList = tableList.filter((e) => e.status === 3);
+      newList = tableMap.filter((e) => e.status === 3);
     } else {
-      newList = tableList;
+      newList = tableMap;
     }
     setModeFilter(status)
-    setFilterList(newList);
+    setfilterTableStatusList(newList);
   }
+
+  console.log("Table", localStorage.getItem("restaurantsId"));
 
   return (
     <div className="my-layout">
@@ -122,7 +151,7 @@ const Table = () => {
           {/* Phần trái */}
           <div className="col h-100">
             <div className="row row-cols-4 mx-0 h-100 overflow-auto">
-              {filterList.map((item, index) => {
+              {filterTableStatusList.map((item, index) => {
                 return (
                   <div key={index} className="col pb-4">
                     <button
