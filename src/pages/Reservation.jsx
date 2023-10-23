@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { DatePicker, Input } from "antd";
 import MenuModal from "../modals/MenuModal";
 import FoodOrder from "./food/FoodOrder";
-const { TextArea } = Input;
 
 const Reservation = () => {
   const { reservation, setReservation, selectList, setSelectList, foodOrder, setFoodOrder } =
