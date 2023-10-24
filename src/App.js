@@ -5,6 +5,7 @@ import routes from "./routes/routes";
 import { Route, Routes } from "react-router-dom";
 import AppState from "./contexts/AppContext/AppState";
 import AuthState from "./contexts/AuthContext/AuthState";
+import TableState from "./contexts/TableContext/TableState";
 
 function App() {
   return (
@@ -17,29 +18,32 @@ function App() {
               <Navbar />
             </div>
             <div className="my-content">
-              <Routes>
-                {routes.map((item, index) => {
-                  
-                  return (
-                    <Route
-                      key={index}
-                      path={item.path}
-                      element={item.component}
-                    >
-                      {item.navBar &&
-                        item.navBar.map((item, index) => {
-                          return (
-                            <Route
-                              key={index}
-                              path={item.name}
-                              element={item.page}
-                            />
-                          );
-                        })}
-                    </Route>
-                  );
-                })}
-              </Routes>
+              <TableState>
+                <Routes>
+                  {routes.map((item, index) => {
+
+                    return (
+                      <Route
+                        key={index}
+                        path={item.path}
+                        element={item.component}
+                      >
+                        {item.navBar &&
+                          item.navBar.map((item, index) => {
+                            return (
+                              <Route
+                                key={index}
+                                path={item.name}
+                                element={item.page}
+                              />
+                            );
+                          })}
+                      </Route>
+                    );
+                  })}
+                </Routes>
+              </TableState>
+
             </div>
           </div>
         </div>

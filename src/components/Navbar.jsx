@@ -24,21 +24,21 @@ const Navbar = () => {
           </div>
 
           {/* Right */}
-          <div className="d-flex align-items-center d-none d-lg-block fs-4">
+          <div className="d-flex align-items-center d-none d-lg-block fs-5">
             <div className="p-3 d-flex align-items-center">
               {/* Số điện thoại */}
               <div
-                className="px-1 rounded-1 d-flex align-items-center me-2"
+                className="px-1 rounded-1 d-flex align-items-center me-5"
                 style={{
                   backgroundColor: "#FCDAB4",
                 }}
               >
-                <img src="/phone.png" alt="phone.png" width={20} height={20} />
+                <img src="/phone.png" alt="phone.png" width={20} height={20} className="me-2"/>
                 <span>091 999 9999</span>
               </div>
               {/* Danh sách nav bar */}
               <div className="d-flex justify-content-center align-items-center gap-4">
-                {customer.navLinkLeft.map((item, index) => {
+                {modeTab.navLinkLeft.map((item, index) => {
                   return (
                     <NavLink
                       key={index}

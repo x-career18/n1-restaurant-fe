@@ -9,8 +9,14 @@ const Slider = () => {
   const [modalShow, setModalShow] = useState(false);
   const [select, setSelect] = useState(null);
 
-  const handleSelect = (selectedIndex) => {
+  const handleChangeSlider = (selectedIndex) => {
     setIndexCarousel(selectedIndex);
+  };
+
+  const handleSelect = (e, item) => {
+    e.preventDefault();
+    setSelect(item);
+    setModalShow(true);
   };
 
   return (
@@ -18,7 +24,7 @@ const Slider = () => {
       <div className="container">
         <Carousel
           activeIndex={indexCarousel}
-          onSelect={handleSelect}
+          onSelect={handleChangeSlider}
           interval={3000}
           className="w-100"
         >
@@ -27,11 +33,7 @@ const Slider = () => {
               <Carousel.Item
                 key={index}
                 interval={3000}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setSelect(item);
-                  setModalShow(true);
-                }}
+                onClick={(e) => handleSelect(e, item)}
               >
                 <button className="w-100 border-0">
                   <img

@@ -1,42 +1,18 @@
 const FormOrderTable = [
   {
-    label: "Full name",
+    label: "tên người đặt",
     fieldName: "fullName",
-  },
-  {
-    label: "Gender",
-    fieldName: "gender",
-    as: "select",
-    options: [
-      { value: "", name: "" },
-      {
-        value: "male",
-        name: "male",
-      },
-      {
-        value: "female",
-        name: "female",
-      },
-      {
-        value: "other",
-        name: "other",
-      },
-    ],
   },
   {
     label: "Email",
     fieldName: "email",
   },
   {
-    label: "Phone",
+    label: "số điện thoại",
     fieldName: "phone",
   },
   {
-    label: "Check-in time",
-    fieldName: "time",
-  },
-  {
-    label: "Order quantity",
+    label: "số bàn đặt",
     fieldName: "quantity",
   },
 ];

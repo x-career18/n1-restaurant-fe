@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import AppContext from '../contexts/AppContext/AppContext';
 import Carousel from 'react-bootstrap/Carousel';
 import { useNavigate } from 'react-router-dom';
+import { param } from "../contexts/QueryParam";
 
 const infoShow = [
     "address",
@@ -14,7 +14,6 @@ const infoShow = [
 ];
 
 const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
-    const { reservation, setReservation } = useContext(AppContext);
     const navigate = useNavigate();
     const [indexCarousel, setIndexCarousel] = useState(0);
     const handleSelect = (selectedIndex) => {
@@ -22,8 +21,12 @@ const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
     };
 
     if (!restaurant) return;
+    const handleParam = () => {
+        onHide();
+        navigate(`/table?${param.restaurants}=${restaurant.name}`);
+    };
 
-    console.log("RestaurantDetailModal", restaurant);
+    // console.log("RestaurantDetailModal", restaurant);
     return (
         <Modal
             show={show}
@@ -77,10 +80,7 @@ const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
             <Modal.Footer>
                 <Button onClick={onHide}>Close</Button>
                 <Button onClick={() => {
-                    localStorage.setItem("restaurantsId", restaurant.id);
-                    console.log("RestaurantDetailModal", restaurant);
-                    onHide();
-                    navigate("/table");
+                    handleParam();
                 }}>Đặt bàn</Button>
             </Modal.Footer>
         </Modal>
