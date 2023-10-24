@@ -3,16 +3,16 @@ import Menu from "./Menu";
 import { NavLink } from "react-router-dom";
 import { customer } from "../modelUI/NavbarLink";
 import { isObjectEmpty } from "../utils/CheckEmpty";
-import AppContext from "../contexts/AppContext/AppContext";
+import AuthContext from "../contexts/AuthContext/AuthContext";
 
 const Navbar = () => {
-  const isLogin = false;
-  const { modeTab } = useContext(AppContext);
+  const { modeTab } = useContext(AuthContext);
+
   if (isObjectEmpty(modeTab)) return;
 
   return (
     <div
-      className="my-header text-my-color-navbar p-2 d-flex align-items-center justify-content-center border-bottom text-uppercase border-warning-subtle"
+      className="my-header text-my-color-navbar p-2 d-flex align-items-center border-bottom text-uppercase border-warning-subtle"
       style={{
         height: 70,
       }}

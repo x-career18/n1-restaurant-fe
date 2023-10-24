@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import AppContext from "../../contexts/AppContext/AppContext";
 import Carousel from "react-bootstrap/Carousel";
 import RestaurantDetailModal from "../../modals/RestaurantDetailModal";

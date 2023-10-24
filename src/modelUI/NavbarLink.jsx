@@ -69,6 +69,56 @@ const customer = {
             text: "Register"
         },
     ]
+};
+
+const manage = {
+    navLinkLeft: [
+        {
+            path: "/",
+            text: "HomePage"
+        },
+        {
+            path: "/menu",
+            text: "Menu"
+        },
+        {
+            path: "/manage",
+            text: "Manage"
+        },
+    ],
+    navLinkRight: [
+        {
+            path: "/logout",
+            text: "Logout"
+        },
+    ]
+};
+
+const staff = {
+    navLinkLeft: [
+        {
+            path: "/",
+            text: "HomePage"
+        },
+        {
+            path: "/menu",
+            text: "Menu"
+        },
+        {
+            path: "/table",
+            text: "Table"
+        },
+        {
+            path: "/checkreservation",
+            text: "CheckInfo"
+        },
+    ],
+    navLinkRight: [
+        {
+            path: "/logout",
+            text: "Logout"
+        }
+    ]
 }
 
-export { customer };
+export { customer, manage, staff };
