@@ -23,6 +23,7 @@ const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
 
     if (!restaurant) return;
 
+    console.log("RestaurantDetailModal", restaurant);
     return (
         <Modal
             show={show}
@@ -76,8 +77,8 @@ const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
             <Modal.Footer>
                 <Button onClick={onHide}>Close</Button>
                 <Button onClick={() => {
-                    reservation["restaurantId"] = restaurant.name;
-                    setReservation(reservation);
+                    localStorage.setItem("restaurantsId", restaurant.id);
+                    console.log("RestaurantDetailModal", restaurant);
                     onHide();
                     navigate("/table");
                 }}>Đặt bàn</Button>

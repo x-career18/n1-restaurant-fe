@@ -8,6 +8,7 @@ export const Restaurant = {
 };
 
 const createRestaurant = ({
+    id,
     name,
     address,
     openTime,
@@ -16,6 +17,7 @@ const createRestaurant = ({
     images,
 }) => {
     return {
+        id,
         name,
         address,
         openTime,

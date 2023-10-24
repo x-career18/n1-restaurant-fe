@@ -4,6 +4,7 @@ import { randomInt } from "../../utils/Random";
 import createRestaurant from "../../models/Restaurant";
 import createTable from "../../models/Table";
 import { FOOD, RESTAURANTS } from "../../utils/LoadImage";
+import { customer } from "../../modelUI/NavbarLink";
 import createFood from "../../models/Food";
 import { category } from "../../models/CategoryFood";
 
@@ -12,7 +13,7 @@ const AppState = ({ children }) => {
   const [selectList, setSelectList] = useState([]);
   const [reservation, setReservation] = useState({});
   const [restaurants, setRestaurants] = useState([]);
-  
+  const [modeTab, setModeTab] = useState({});
   const [foodOrder, setFoodOrder] = useState([]);
   const [menu, setMenu] = useState([]);
   const [combo, setCombo] = useState([]);
@@ -83,6 +84,7 @@ const AppState = ({ children }) => {
 
     setTableList(tables);
     setRestaurants(restaurants);
+    setModeTab(customer);
     setMenu(menu);
     setCombo(combo);
   }, []);
@@ -112,7 +114,7 @@ const AppState = ({ children }) => {
         selectList, setSelectList,
         reservation, setReservation,
         restaurants, setRestaurants,
-
+        modeTab, setModeTab,
         foodOrder, setFoodOrder,
         menu, setMenu,
         combo,

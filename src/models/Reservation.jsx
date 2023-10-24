@@ -3,12 +3,12 @@
 import Order from "./Order";
 
 export const Reservation = {
-    restaurantId: "",
-    tableId: "",
     fullName: "",
     phoneNo: "",
-    order: Order,
+    restaurantId: "",
+    tableId: "",
     tableCount: "",
+    order: Order,
     checkinTime: "",
     expiredTime: "",
     status: "",
