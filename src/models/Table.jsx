@@ -15,6 +15,7 @@ const createTable = ({
     totalCountTable,
     checkinTime,
     status,
+    image,
 }) => {
     return {
         restaurantName,
@@ -22,6 +23,7 @@ const createTable = ({
         totalCountTable,
         checkinTime,
         status,
+        image
     }
 }
 
