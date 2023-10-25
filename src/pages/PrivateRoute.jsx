@@ -9,6 +9,7 @@ const PrivateRoute = ({ component: Component }) => {
   if (isAuthenticated) {
     return <Component />;
   }
+  
   return <Navigate to="/login" />;
 };
 

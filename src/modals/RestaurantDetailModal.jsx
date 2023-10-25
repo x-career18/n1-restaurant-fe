@@ -5,13 +5,12 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useNavigate } from 'react-router-dom';
 import { param } from "../contexts/QueryParam";
 
-const infoShow = [
-    "address",
-    "openTime",
-    "closeTime",
-    "reportOrderCount",
-    "description"
-];
+const showInfoRestaurant = {
+    "Địa chỉ:": "address",
+    "Thời gian mở cửa:": "openTime,closeTime",
+    "Số lượt đặt bàn": "reportOrderCount",
+    "Mô tả": "description"
+};
 
 const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
     const navigate = useNavigate();
@@ -64,18 +63,38 @@ const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
                     }
                 </Carousel >
                 {/* Hiển thị thông tin của nhà hàng */}
-                {
-                    infoShow.map((item, index) => {
-                        return <div className='row' key={index}>
-                            <div className='col'>
-                                {item}
-                            </div>
-                            <div className='col'>
-                                {restaurant[item] ? restaurant[item] : "Chưa có thông tin"}
-                            </div>
-                        </div>
-                    })
-                }
+                <div className='row mt-2'>
+                    <div className='col-2'>
+                        Địa chỉ:
+                    </div>
+                    <div className='col'>
+                        {getValueByKey(restaurant, "address")}
+                    </div>
+                </div>
+                <div className='row mt-2'>
+                    <div className='col-2'>
+                        Thời gian mở cửa:
+                    </div>
+                    <div className='col'>
+                        {`${getValueByKey(restaurant, "openTime")} - ${getValueByKey(restaurant, "closeTime")}`}
+                    </div>
+                </div>
+                <div className='row mt-2'>
+                    <div className='col-2'>
+                        Số lượt đặt bàn:
+                    </div>
+                    <div className='col'>
+                        {getValueByKey(restaurant, "reportOrderCount")}
+                    </div>
+                </div>
+                <div className='row mt-2'>
+                    <div className='col-2'>
+                        Mô tả:
+                    </div>
+                    <div className='col'>
+                        {getValueByKey(restaurant, "description")}
+                    </div> 
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={onHide}>Close</Button>
@@ -86,5 +105,9 @@ const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
         </Modal>
     );
 }
+
+const getValueByKey = (obj, key) => {
+    return obj[key] ? obj[key] : "Chưa có thông tin";
+};
 
 export default RestaurantDetailModal

@@ -15,4 +15,18 @@ const FOOD = [
     BASE_URL + "/food/p1_mgoiwz.png",
 ]
 
-export { RESTAURANTS, FOOD };
+const COMBO = [
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/37/menu1685431458177.png",
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/38/menu1672331831587.jpeg",
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/39/menu1672331897382.jpeg",
+];
+
+const COMBOMENU = [
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/37/menuFile1693292433455.png",
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/38/menuFile1697702988333.png",
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/39/menuFile1693292861992.png",
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/40/menuFile1672331941569.png",
+    "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/41/menuFile1672331987022.png",
+];
+
+export { RESTAURANTS, FOOD, COMBOMENU, COMBO };

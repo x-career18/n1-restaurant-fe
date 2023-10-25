@@ -1,5 +1,6 @@
 import { ManageNavbar } from "../modelUI/ManageNavbar";
 import CheckReservation from "../pages/CheckReservation";
+import ComboMenu from "../pages/Combo-menu";
 import Home from "../pages/Home";
 import Order from "../pages/Order";
 import Payment from "../pages/Payment";
@@ -42,12 +43,6 @@ const routes = [
         isAdmin: false,
     },
     {
-        path: "/reservation",
-        component: <Reservation />,
-        isPrivate: false,
-        isAdmin: false,
-    },
-    {
         path: "/menu",
         component: <Food />,
         isPrivate: false,
@@ -69,6 +64,12 @@ const routes = [
     {
         path: "/checkreservation",
         component: <CheckReservation />,
+        isPrivate: false,
+        isAdmin: false
+    },
+    {
+        path: "/combo-menu",
+        component: <ComboMenu />,
         isPrivate: false,
         isAdmin: false
     },

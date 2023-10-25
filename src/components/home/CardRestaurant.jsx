@@ -1,7 +1,6 @@
-
-import React, { useContext } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import AppContext from '../../contexts/AppContext/AppContext';
+import { param } from '../../contexts/QueryParam';
 
 const colorBg = [
     "#e8453e",
@@ -11,8 +10,8 @@ const colorBg = [
 ]
 
 const CardRestaurant = ({ index, item, onClickOrder, onClickMenu }) => {
-    const { reservation, setReservation } = useContext(AppContext);
     const navigate = useNavigate();
+
     return (
         <div key={index} className='col'
             style={{
@@ -57,9 +56,7 @@ const CardRestaurant = ({ index, item, onClickOrder, onClickMenu }) => {
                         fontSize: 16
                     }}
                     onClick={() => {
-                        reservation["restaurantId"] = item.name;
-                        setReservation(reservation);
-                        navigate("/table");
+                        navigate(`/table?${param.restaurants}=${item.name}`);
                     }}
                 >
                     Đặt bàn
@@ -75,7 +72,7 @@ const CardRestaurant = ({ index, item, onClickOrder, onClickMenu }) => {
                         fontSize: 14
                     }}
                     onClick={() => {
-                        navigate("/menu");
+                        navigate(`/menu`);
                     }}
                 >
                     Xem thực đơn

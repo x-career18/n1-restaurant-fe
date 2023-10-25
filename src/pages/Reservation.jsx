@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import AppContext from "../contexts/AppContext/AppContext";
 import * as Yup from "yup";
 import { capitalizeFirstLetter } from "../utils/CapitalizeFirstLetter";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { FormOrderTable } from "../modelUI/FormOrderTable";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { DatePicker, Input, notification } from "antd";
@@ -10,19 +10,21 @@ import MenuModal from "../modals/MenuModal";
 import FoodOrder from "./food/FoodOrder";
 import reservationAPI from "../apis/reservationAPI";
 import { param } from "../contexts/QueryParam";
+import { getIdByRestaurantName } from "../utils/TableUtil";
+import dayjs from "dayjs";
 
 const Reservation = () => {
-  const { reservation, setReservation, selectList, setSelectList, foodOrder, setFoodOrder } =
+  const { restaurants, reservation, setReservation, selectList, setSelectList, foodOrder, setFoodOrder } =
     useContext(AppContext);
   const [mode, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
-  const [checkInTime, setCheckInTime] = useState({});
+  const [checkInTime, setCheckInTime] = useState(null);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const restaurantName = searchParams.get(param.restaurants);
-  const selectTable = searchParams.get(param.selectTable);
+  const selectTable = searchParams.get(param.selectTable)?.split(",");
 
   const initialValues = {
     fullName: "",
@@ -38,27 +40,47 @@ const Reservation = () => {
 
   function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
     setLoading(true);
+    setSubmitting(true);
+
     // Lấy thông tin của foodOrder
     let foodOrderList = [];
+    for (let index = 0; index < foodOrder.length; index++) {
+      const {
+        foodName,
+        count,
+        price,
+        discount,
+      } = foodOrder[index];
+
+      foodOrderList.push({
+        "item": foodName,
+        "quantity": count,
+        "discount": discount,
+        "total": price * count
+      });
+    }
 
     // Tính expiredTime từ checkInTime
     const expiredTime = checkInTime.add(30, 'minutes');
 
-    // Tạo danh sách bàn
-    const listTableId = selectTable?.split(",").map(Number);
-    if (!listTableId) {
+    // Kiểm tra danh sách bàn
+    if (selectTable == null || selectTable == "") {
       openNotificationWithIcon(
         "warning",
         "Bạn nên chọn ít nhất 1 bàn.!"
       );
+      setLoading(false);
+      setSubmitting(false);
       return;
     }
 
+    const listTableId = selectTable.map(Number);
+
     // Tạo thông tin để gửi
     const newReservation = {
-      fullname: fields.fullname,
+      fullname: fields.fullName,
       phoneNo: fields.phone,
-      restaurantId: reservation.restaurantId,
+      restaurantId: getIdByRestaurantName(restaurants, restaurantName),
       tableId: listTableId,
       tableCount: listTableId.length,
       order: foodOrderList,
@@ -67,7 +89,13 @@ const Reservation = () => {
     }
     console.log("newReservation", newReservation);
 
-
+    searchParams.delete(param.selectTable);
+    setSearchParams(searchParams);
+    resetForm();
+    setLoading(false);
+    setSubmitting(false);
+    setFoodOrder([]);
+    setCheckInTime(null);
   }
 
   // Call API
@@ -188,6 +216,7 @@ const Reservation = () => {
                       className="col"
                       size={'large'}
                       showTime
+                      value={checkInTime}
                       onChange={onChange}
                       onOk={onOk}
                       placeholder={"Enter time"}

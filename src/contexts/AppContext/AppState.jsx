@@ -3,8 +3,8 @@ import AppContext from "./AppContext";
 import { randomInt } from "../../utils/Random";
 import createRestaurant from "../../models/Restaurant";
 import createTable from "../../models/Table";
-import { FOOD, RESTAURANTS } from "../../utils/LoadImage";
-import { customer } from "../../modelUI/NavbarLink";
+import { COMBO, FOOD, RESTAURANTS } from "../../utils/LoadImage";
+import { customer, manage } from "../../modelUI/NavbarLink";
 import createFood from "../../models/Food";
 import { category } from "../../models/CategoryFood";
 
@@ -39,8 +39,8 @@ const AppState = ({ children }) => {
         id: index,
         name: `Cơ sở số ${index}`,
         address: `Địa chỉ số ${index}`,
-        openTime: "Fri Oct 06 2023 21:10:33",
-        closeTime: "Fri Oct 06 2023 21:10:33",
+        openTime: "10:00",
+        closeTime: "23:30",
         description: `Ẩm thực tại Charger nổi bật với đa dạng các món ngon, đưa cuộc nhậu lên một tầm cao mới. Trong không gian hiện đại với phong cách decor camping độc đáo, âm nhạc bắt tai, Charger hứa hẹn sẽ mang đến những  trải nghiệm ăn chơi tiệc tùng đỉnh cao có 1-0-2.`,
         images: [
           RESTAURANTS[2],
@@ -78,14 +78,13 @@ const AppState = ({ children }) => {
         "comboName": `${randomInt(500, 200)}k`,
         "comboDescription": "Gọi thả ga, ăn thật đã",
         'comboCount': `${randomInt(100, 10)} món`,
-        "comboImage": FOOD[0]
+        "comboImage": COMBO[index]
       };
       combo.push(item);
     }
 
     setTableList(tables);
     setRestaurants(restaurants);
-    setModeTab(customer);
     setMenu(menu);
     setCombo(combo);
   }, []);

@@ -4,9 +4,9 @@ import { notification } from "antd";
 import Reservation from "./Reservation";
 import createTable from "../models/Table";
 import { randomInt } from "../utils/Random";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { param } from "../contexts/QueryParam";
-import TableState from "../contexts/TableContext/TableState";
+import { getIdByRestaurantName } from "../utils/TableUtil";
 
 const colorStatus = {
   "1": "color-free",
@@ -29,15 +29,16 @@ const Table = () => {
   const [filterTableStatusList, setfilterTableStatusList] = useState([]); // Lọc bàn theo yêu cầu (trống, đã đặt, đang hoạt động)
   const [modeFilter, setModeFilter] = useState("All"); // Lọc bàn theo yêu cầu (trống, đã đặt, đang hoạt động)
   const [tableMap, seTableMap] = useState([]);
+  const navigate = useNavigate();
+
+  const newParam = searchParams.get(param.selectTable)?.split(",");
 
   // tìm restaurantsId để lấy dữ liệu bàn của nhà hàng
   useEffect(() => {
-    let restaurantsId = 0;
-    for (let index = 0; index < restaurants.length; index++) {
-      const element = restaurants[index];
-      if (element.name == searchParams.get(param.restaurants)) {
-        restaurantsId = element.id;
-      }
+    const restaurantsId = getIdByRestaurantName(restaurants, searchParams.get(param.restaurants));
+    if (!restaurantsId) {
+      navigate("/");
+      return;
     }
 
     let tables = [];
@@ -85,14 +86,13 @@ const Table = () => {
     }
 
     // Cập nhật chọn bàn
-    let newParam = searchParams.get(param.selectTable);
-    if (newParam == null) {
+    if (newParam == null || newParam == "") {
       searchParams.set(param.selectTable, `${table.tableId}`);
       setSearchParams(searchParams);
       return;
     }
 
-    const listTableId = newParam.split(",").map(Number);
+    let listTableId = newParam.map(Number);
     let filter = listTableId.filter((item) => item !== table.tableId);
     if (listTableId.length === filter.length) {
       filter.push(table.tableId);
@@ -100,10 +100,8 @@ const Table = () => {
 
     filter.sort((a, b) => a - b);
     searchParams.set(param.selectTable, `${filter.toString()}`);
-
-    table.selected = !table.selected;
     setSearchParams(searchParams);
-    console.log("handleChooseTable", newParam, listTableId, filter);
+    // console.log("handleChooseTable", newParam, listTableId, filter);
   };
 
   const openNotificationWithIcon = (type, message) => {
@@ -130,6 +128,11 @@ const Table = () => {
     // console.log("filterStatusTable", newList);
   }
 
+  const refreshTableList = () => {
+    searchParams.delete(param.selectTable);
+    setSearchParams(searchParams);
+  };
+
   console.log("Table");
 
   return (
@@ -137,7 +140,7 @@ const Table = () => {
     <div className="my-layout">
       {contextHolder}
       <div className="my-layout container h-100 px-0">
-        {headerPage({ filterStatusTable })}
+        {headerPage({ filterStatusTable, refreshTableList })}
 
         {/* Body của trang table */}
         <div className="my-content h-100">
@@ -152,7 +155,7 @@ const Table = () => {
                         <div key={index} className="col pb-4">
                           <button
                             type="button"
-                            className={`${styleDefault} ${colorStatus[item.status]} ${borderSelect[item.selected]}`}
+                            className={`${styleDefault} ${colorStatus[item.status]} ${borderSelect[newParam == null ? false : newParam == "" ? false : newParam.map(Number).includes(item.tableId)]}`}
                             onClick={() => handleChooseTable(item)}
                           >
                             <img
@@ -195,7 +198,7 @@ const headerPage = ({ filterStatusTable, refreshTableList }) => {
       <button
         type="button"
         className="grey h-100 w-25 d-flex align-items-center justify-content-center border-0"
-        onClick={() => { }}
+        onClick={() => { refreshTableList() }}
       >
         Refesh
       </button>

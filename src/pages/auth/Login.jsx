@@ -75,7 +75,7 @@ const Login = () => {
 
   return (
     <div className="container h-100">
-      <div className="text-center d-flex justify-content-center align-items-center h-100">
+      <div className="d-flex justify-content-center align-items-center h-100">
         <Formik
           enableReinitialize
           initialValues={initialValues}
@@ -90,7 +90,7 @@ const Login = () => {
                     <div className="d-flex align-items-center justify-content-center w-100 h-100">
                       <img
                         src={`${RESTAURANTS[0]}`}
-                        alt="/loginBg.png"
+                        alt={`${RESTAURANTS[0]}`}
                         style={{
                           width: "70%",
                           height: "70%",
@@ -99,7 +99,7 @@ const Login = () => {
                     </div>
                   </div>
 
-                  <div className="col justify-content-start p-4 h-100">
+                  <div className="col p-4 h-100">
                     <Form className="form-horizontal h-100  position-relative">
                       {LoginUI.map((item) => {
                         return (

@@ -9,6 +9,7 @@ import {
     FaLock,
     FaRightToBracket,
 } from "react-icons/fa6";
+import { RESTAURANTS } from '../../utils/LoadImage';
 
 
 const Register = () => {
@@ -64,33 +65,33 @@ const Register = () => {
     }
 
     return (
-        <Main>
-            <Formik
-                enableReinitialize
-                initialValues={initialValues}
-                // validationSchema={validationSchema}
-                onSubmit={onSubmit}
-            >
-                {({ errors, touched, isSubmitting, setFieldValue }) => {
-                    return (
-                        <div className='rounded-1 border w-75 h-75'>
-                            <div className=' row h-100'>
-                                <div className='col d-none d-md-block border-end'>
-                                    <div className='d-flex align-items-center justify-content-center w-100 h-100'>
-                                        <img
-                                            src="/loginBg.png"
-                                            alt="/loginBg.png"
-                                            style={{
-                                                width: '70%',
-                                                height: '70%'
-                                            }}
-                                        />
+        <div className="container h-100">
+            <div className="d-flex justify-content-center align-items-center h-100">
+                <Formik
+                    enableReinitialize
+                    initialValues={initialValues}
+                    // validationSchema={validationSchema}
+                    onSubmit={onSubmit}
+                >
+                    {({ errors, touched, isSubmitting, setFieldValue }) => {
+                        return (
+                            <div className='rounded-1 border w-75 h-75'>
+                                <div className=' row h-100'>
+                                    <div className='col d-none d-md-block border-end'>
+                                        <div className='d-flex align-items-center justify-content-center w-100 h-100'>
+                                            <img
+                                                src={`${RESTAURANTS[0]}`}
+                                                alt={`${RESTAURANTS[0]}`}
+                                                style={{
+                                                    width: '70%',
+                                                    height: '70%'
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className='col align-items-center justify-content-start p-4 h-100'>
-                                    <div className='row'>
-                                        <div className="text-center auth-logo-text">
+                                    <div className='col p-4 h-100'>
+                                        <div className='row auth-logo-text text-center'>
                                             <h4 className="mb-3 mt-2">
                                                 Free Register for Brother
                                             </h4>
@@ -98,51 +99,51 @@ const Register = () => {
                                                 Get your free Brother account now.
                                             </p>
                                         </div>
-                                    </div>
-                                    <div className='row'>
-                                        <Form className="form-horizontal auth-form h-100 position-relative">
-                                            {RegisterUI.map((item) => {
-                                                return (<div key={item.fieldName} className="form-group col">
-                                                    <label className='fs-6 '>{item.label}</label>
-                                                    <Field
-                                                        name={item.fieldName}
-                                                        type={item.type ? item.type : "text"}
-                                                        placeholder={`Enter ${item.label}`}
-                                                        className={
-                                                            "form-control my-2" +
-                                                            (errors[item.fieldName] &&
-                                                                touched[item.fieldName]
-                                                                ? " is-invalid"
-                                                                : "")
-                                                        }
-                                                    />
-                                                    {/* <ErrorMessage
+                                        <div className='row'>
+                                            <Form className="form-horizontal auth-form h-100 position-relative">
+                                                {RegisterUI.map((item) => {
+                                                    return (<div key={item.fieldName} className="form-group col">
+                                                        <label className='fs-6 ms-1'>{item.label}</label>
+                                                        <Field
+                                                            name={item.fieldName}
+                                                            type={item.type ? item.type : "text"}
+                                                            placeholder={`Enter ${item.label}`}
+                                                            className={
+                                                                "form-control my-2" +
+                                                                (errors[item.fieldName] &&
+                                                                    touched[item.fieldName]
+                                                                    ? " is-invalid"
+                                                                    : "")
+                                                            }
+                                                        />
+                                                        {/* <ErrorMessage
                                                         name={item.fieldName}
                                                         component="div"
                                                         className="invalid-feedback"
                                                     /> */}
-                                                </div>);
-                                            })}
-                                           
-                                            {error && <p className="text-danger">{error}</p>}
-                                            <button
-                                                className="btn btn-outline-primary btn-round btn-block waves-effect waves-light position-absolute top-100 start-50 translate-middle-x fs-4 mt-5"
-                                                type="submit"
-                                            >
-                                                {loading ? "Loading" : "Register"}
-                                                <FaRightToBracket className="fas fa-sign-in-alt ms-3" />
-                                            </button>
-                                        </Form>
+                                                    </div>);
+                                                })}
+
+                                                {error && <p className="text-danger">{error}</p>}
+                                                <button
+                                                    className="btn btn-outline-primary btn-round btn-block waves-effect waves-light position-absolute top-100 start-50 translate-middle-x fs-4 mt-5"
+                                                    type="submit"
+                                                >
+                                                    {loading ? "Loading" : "Register"}
+                                                    <FaRightToBracket className="fas fa-sign-in-alt ms-3" />
+                                                </button>
+                                            </Form>
+                                        </div>
+
                                     </div>
-
                                 </div>
-                            </div>
 
-                        </div>
-                    );
-                }}
-            </Formik>
-        </Main>
+                            </div>
+                        );
+                    }}
+                </Formik>
+            </div>
+        </div>
     )
 }
 

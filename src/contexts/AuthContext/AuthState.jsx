@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 import authAPI from "../../apis/authAPI";
-import { customer } from "../../modelUI/NavbarLink";
+import { customer, manage, staff } from "../../modelUI/NavbarLink";
 
 const AuthState = ({ children }) => {
   const [auth, setAuth] = useState({
@@ -70,9 +70,9 @@ const AuthState = ({ children }) => {
     } else {
       setModeTab(customer);
     }
-    console.log("AuthState");
-  }, []);
 
+  }, []);
+  console.log("AuthState");
   return (
     <AuthContext.Provider
       value={{
