@@ -1,0 +1,46 @@
+[{
+  "_id": 1,
+  "name": "An",
+  "price": 139,
+  "catogory": "Buffer",
+  "countMenu": 10,
+  "description": "Gọi thả ga, ăn thật đã",
+  "images": "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/37/menu1685431458177.png",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-26T09:15:18.269Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-26T09:15:18.269Z"
+  }
+},{
+  "_id": 2,
+  "name": "An1",
+  "price": 159,
+  "catogory": "Buffer",
+  "countMenu": 12,
+  "description": "Gọi thả ga, ăn thật đã",
+  "images": "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/38/menu1672331831587.jpeg",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-26T09:16:13.890Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-26T09:16:13.890Z"
+  }
+},{
+  "_id": 3,
+  "name": "An2",
+  "price": 169,
+  "catogory": "Buffer",
+  "countMenu": 12,
+  "description": "Gọi thả ga, ăn thật đã",
+  "images": "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/39/menu1672331897382.jpeg",
+  "deleted": false,
+  "createdAt": {
+    "$date": "2023-10-26T09:17:29.785Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-26T09:17:29.785Z"
+  }
+}]

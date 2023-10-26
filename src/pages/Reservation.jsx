@@ -11,7 +11,6 @@ import FoodOrder from "./food/FoodOrder";
 import reservationAPI from "../apis/reservationAPI";
 import { param } from "../contexts/QueryParam";
 import { getIdByRestaurantName } from "../utils/TableUtil";
-import dayjs from "dayjs";
 
 const Reservation = () => {
   const { restaurants, reservation, setReservation, selectList, setSelectList, foodOrder, setFoodOrder } =
@@ -20,7 +19,6 @@ const Reservation = () => {
   const [loading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [checkInTime, setCheckInTime] = useState(null);
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const restaurantName = searchParams.get(param.restaurants);
@@ -39,8 +37,10 @@ const Reservation = () => {
   });
 
   function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-    setLoading(true);
-    setSubmitting(true);
+    if (!checkSelectTable(selectTable) || !checkTime(checkInTime)) {
+      setSubmitting(false);
+      return;
+    }
 
     // Lấy thông tin của foodOrder
     let foodOrderList = [];
@@ -63,17 +63,6 @@ const Reservation = () => {
     // Tính expiredTime từ checkInTime
     const expiredTime = checkInTime.add(30, 'minutes');
 
-    // Kiểm tra danh sách bàn
-    if (selectTable == null || selectTable == "") {
-      openNotificationWithIcon(
-        "warning",
-        "Bạn nên chọn ít nhất 1 bàn.!"
-      );
-      setLoading(false);
-      setSubmitting(false);
-      return;
-    }
-
     const listTableId = selectTable.map(Number);
 
     // Tạo thông tin để gửi
@@ -87,7 +76,8 @@ const Reservation = () => {
       checkinTime: checkInTime.$d,
       expiredTime: expiredTime.$d,
     }
-    console.log("newReservation", newReservation);
+
+    createReservation(newReservation);
 
     searchParams.delete(param.selectTable);
     setSearchParams(searchParams);
@@ -103,7 +93,7 @@ const Reservation = () => {
     const response = await reservationAPI.create(model);
 
     // Check response
-    if (response.success) {
+    if (response.data.success) {
       // Thông báo thành công
       openNotificationWithIcon(
         "success",
@@ -114,18 +104,36 @@ const Reservation = () => {
       // Thông báo thất bại
       openNotificationWithIcon(
         "error",
-        "Đặt bàn không thành công.!"
+        "Đặt bàn không thành công. " + response.data.message
       );
     }
     setLoading(false);
   }
 
-  // reset toàn bộ
-  const handleReset = () => {
-    setSelectList([]);
-    setReservation({});
-    navigate("/");
-  }
+
+  const checkSelectTable = (selectTable) => {
+    if (selectTable == null || selectTable == "") {
+      openNotificationWithIcon(
+        "warning",
+        "Bạn nên chọn ít nhất 1 bàn.!"
+      );
+      setLoading(false);
+      return false;
+    }
+    return true;
+  };
+
+  const checkTime = (time) => {
+    if (time == null || time == "") {
+      openNotificationWithIcon(
+        "warning",
+        "Bạn nên chọn giờ đặt bàn.!"
+      );
+      setLoading(false);
+      return false;
+    }
+    return true;
+  };
 
   const openNotificationWithIcon = (type, message) => {
     mode[type]({
@@ -135,24 +143,19 @@ const Reservation = () => {
   };
 
   const onChange = (value, dateString) => {
-    console.log("Selected Time: ", value);
-    // console.log("Formatted Selected Time: ", dateString);
-    // console.log("Time $d: ", value.$d);
-    let expiredTime = value.add(30, 'minutes');
-    console.log("expiredTime", expiredTime);
     setCheckInTime(value);
   };
 
   const onOk = (value) => {
     console.log("onOk: ", value);
-    setCheckInTime(value.$d)
+    setCheckInTime(value);
   };
 
   const handleOrder = () => {
     setModalShow(true);
   };
 
-  // console.log("Reservation", foodOrder.length);
+  console.log("Reservation");
 
   return (
     <div className="container pt-2 h-100">

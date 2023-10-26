@@ -7,6 +7,9 @@ import { COMBO, FOOD, RESTAURANTS } from "../../utils/LoadImage";
 import { customer, manage } from "../../modelUI/NavbarLink";
 import createFood from "../../models/Food";
 import { category } from "../../models/CategoryFood";
+import reservationAPI from "../../apis/reservationAPI";
+import restaurantAPI from "../../apis/restaurantAPI";
+import comboAPI from "../../apis/comboAPI";
 
 const AppState = ({ children }) => {
   const [tableList, setTableList] = useState([]);
@@ -33,27 +36,8 @@ const AppState = ({ children }) => {
       tables.push(item);
     }
 
-    let restaurants = [];
-    for (let index = 1; index <= 4; index++) {
-      const item = createRestaurant({
-        id: index,
-        name: `Cơ sở số ${index}`,
-        address: `Địa chỉ số ${index}`,
-        openTime: "10:00",
-        closeTime: "23:30",
-        description: `Ẩm thực tại Charger nổi bật với đa dạng các món ngon, đưa cuộc nhậu lên một tầm cao mới. Trong không gian hiện đại với phong cách decor camping độc đáo, âm nhạc bắt tai, Charger hứa hẹn sẽ mang đến những  trải nghiệm ăn chơi tiệc tùng đỉnh cao có 1-0-2.`,
-        images: [
-          RESTAURANTS[2],
-          RESTAURANTS[3],
-          RESTAURANTS[4],
-          RESTAURANTS[2],
-          RESTAURANTS[3],
-          RESTAURANTS[4],
-        ]
-      });
-      restaurants.push(item);
-    }
-
+    getAllRestaurant().then((data) => setRestaurants(data));
+    getAllCombo().then((data) => setCombo(data));
     let menu = [];
     for (let index = 0; index < 50; index++) {
       const categoryId = randomInt(4, 1);
@@ -71,23 +55,25 @@ const AppState = ({ children }) => {
       menu.push(item);
     }
 
-    let combo = [];
-    for (let index = 0; index < 3; index++) {
-      const item = {
-        "comboCategory": "set",
-        "comboName": `${randomInt(500, 200)}k`,
-        "comboDescription": "Gọi thả ga, ăn thật đã",
-        'comboCount': `${randomInt(100, 10)} món`,
-        "comboImage": COMBO[index]
-      };
-      combo.push(item);
-    }
-
     setTableList(tables);
-    setRestaurants(restaurants);
     setMenu(menu);
-    setCombo(combo);
   }, []);
+
+  const getAllRestaurant = async () => {
+    const response = await restaurantAPI.getAll();
+    // Check response
+    if (response.data.success) {
+      return response.data.data;
+    }
+  }
+
+  const getAllCombo = async () => {
+    const response = await comboAPI.getAll();
+    // Check response
+    if (response.data.success) {
+      return response.data.data;
+    }
+  }
 
   const refreshTableList = () => {
     let newTableList = [

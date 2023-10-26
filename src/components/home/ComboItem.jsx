@@ -14,19 +14,19 @@ const ComboItem = ({ item, index }) => {
                     }}
                 >
                     <h1 className="card-title text-uppercase">
-                        {item.comboCategory}
+                        set
                         <span
                             className='text-my-color-navbar'
                             style={{
                                 marginLeft: 10
                             }}>
-                            {item.comboName}</span>
+                            {item.price}</span>
                     </h1>
-                    <p className="card-text">{item.comboDescription}</p>
-                    <p className="card-text"><small className="text-muted">{item.comboCount}</small></p>
+                    <p className="card-text">{item.description}</p>
+                    <p className="card-text"><small className="text-muted">{item.countMenu}</small></p>
                 </div>
                 <div className='mt-3 position-relative'>
-                    <img src={item.comboImage} alt='...' className="img-fluid card-img-bottom" />
+                    <img src={item.images} alt='...' className="img-fluid card-img-bottom" />
                     <div className='position-absolute bottom-0 start-50 translate-middle-x p-4 w-100 d-flex justify-content-center'>
                         <button
                             style={{

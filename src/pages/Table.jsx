@@ -41,6 +41,7 @@ const Table = () => {
       return;
     }
 
+    // Lấy toàn bộ table của nhà hàng, tiến hành hiển thị danh sách lọc
     let tables = [];
     let maxTable = 10;
     if (restaurantsId == 2) {
@@ -67,7 +68,6 @@ const Table = () => {
       tables.push(item);
     }
 
-    // Lấy toàn bộ table của nhà hàng, tiến hành hiển thị danh sách lọc
     seTableMap(tables);
   }, [restaurants]);
 
@@ -133,7 +133,7 @@ const Table = () => {
     setSearchParams(searchParams);
   };
 
-  console.log("Table");
+  console.log("Table", searchParams.get(param.restaurants));
 
   return (
 

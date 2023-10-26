@@ -1,6 +1,7 @@
 const param = {
     restaurants: "restaurants",
-    selectTable: "selectTable"
+    selectTable: "selectTable",
+    time: "time"
 }
 
 export { param };

@@ -42,26 +42,17 @@ const Register = () => {
         try {
             setLoading(true);
             setError(null);
-            // const response = await authAPI.login({
-            //     username: values.username,
-            //     password: values.userpassword,
-            // });
+            const request = {
 
-            // localStorage.setItem("accessToken", response.data.data.acceptToken);
-
-            // const userInfo = await handleLogin();
-            // if (userInfo.role_id === 1) {
-            //     navigate("/kiots");
-            // } else {
-            //     navigate("/");
-            // }
-            navigate("/");
+            }
+            console.log("Register", request);
         } catch (error) {
-            console.log(error);
+            console.log("Register", error);
             setError(error.response.data.error);
         } finally {
             setLoading(false);
         }
+        navigate("/");
     }
 
     return (
@@ -90,7 +81,7 @@ const Register = () => {
                                         </div>
                                     </div>
 
-                                    <div className='col p-4 h-100'>
+                                    <div className='col p-4 h-100 position-relative'>
                                         <div className='row auth-logo-text text-center'>
                                             <h4 className="mb-3 mt-2">
                                                 Free Register for Brother
@@ -100,7 +91,7 @@ const Register = () => {
                                             </p>
                                         </div>
                                         <div className='row'>
-                                            <Form className="form-horizontal auth-form h-100 position-relative">
+                                            <Form className="form-horizontal auth-form h-100 ">
                                                 {RegisterUI.map((item) => {
                                                     return (<div key={item.fieldName} className="form-group col">
                                                         <label className='fs-6 ms-1'>{item.label}</label>
@@ -125,13 +116,15 @@ const Register = () => {
                                                 })}
 
                                                 {error && <p className="text-danger">{error}</p>}
-                                                <button
-                                                    className="btn btn-outline-primary btn-round btn-block waves-effect waves-light position-absolute top-100 start-50 translate-middle-x fs-4 mt-5"
-                                                    type="submit"
-                                                >
-                                                    {loading ? "Loading" : "Register"}
-                                                    <FaRightToBracket className="fas fa-sign-in-alt ms-3" />
-                                                </button>
+                                                <div className='position-absolute bottom-0 start-50 translate-middle-x p-4'>
+                                                    <button
+                                                        className="btn btn-outline-primary btn-round fs-4"
+                                                        type="submit"
+                                                    >
+                                                        {loading ? "Loading" : "Register"}
+                                                        <FaRightToBracket className="fas fa-sign-in-alt ms-3" />
+                                                    </button>
+                                                </div>
                                             </Form>
                                         </div>
 

@@ -7,6 +7,7 @@ const TableState = ({ children }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   
   useEffect(() => {
+    searchParams.delete(param.time);
     searchParams.delete(param.selectTable);
     setSearchParams(searchParams);
   }, []);

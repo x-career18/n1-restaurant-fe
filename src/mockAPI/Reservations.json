@@ -1,0 +1,248 @@
+[
+  {
+    "_id": 1,
+    "fullname": "An",
+    "phoneNo": "123",
+    "restaurantId": 1,
+    "tableId": [
+      2
+    ],
+    "tableCount": 1,
+    "order": [],
+    "checkinTime": {
+      "$date": "2023-10-26T07:05:00.378Z"
+    },
+    "expiredTime": {
+      "$date": "2023-10-26T07:35:00.378Z"
+    },
+    "status": 0,
+    "deleted": false,
+    "createdAt": {
+      "$date": "2023-10-26T07:05:05.869Z"
+    },
+    "updatedAt": {
+      "$date": "2023-10-26T07:05:05.869Z"
+    }
+  },
+  {
+    "_id": 2,
+    "fullname": "An",
+    "phoneNo": "123",
+    "restaurantId": 1,
+    "tableId": [
+      2
+    ],
+    "tableCount": 1,
+    "order": [],
+    "checkinTime": {
+      "$date": "2023-10-26T07:05:32.663Z"
+    },
+    "expiredTime": {
+      "$date": "2023-10-26T07:35:32.663Z"
+    },
+    "status": 0,
+    "deleted": false,
+    "createdAt": {
+      "$date": "2023-10-26T07:05:34.300Z"
+    },
+    "updatedAt": {
+      "$date": "2023-10-26T07:05:34.300Z"
+    }
+  },
+  {
+    "_id": 3,
+    "fullname": "An",
+    "phoneNo": "123",
+    "restaurantId": 2,
+    "tableId": [
+      12,
+      19
+    ],
+    "tableCount": 2,
+    "order": [],
+    "checkinTime": {
+      "$date": "2023-10-26T07:07:03.958Z"
+    },
+    "expiredTime": {
+      "$date": "2023-10-26T07:37:03.958Z"
+    },
+    "status": 0,
+    "deleted": false,
+    "createdAt": {
+      "$date": "2023-10-26T07:07:23.564Z"
+    },
+    "updatedAt": {
+      "$date": "2023-10-26T07:07:23.564Z"
+    }
+  },
+  {
+    "_id": 4,
+    "fullname": "123",
+    "phoneNo": "123",
+    "restaurantId": 2,
+    "tableId": [
+      3,
+      10,
+      19
+    ],
+    "tableCount": 3,
+    "order": [
+      {
+        "item": "Đồ uống",
+        "quantity": 1,
+        "discount": 0,
+        "total": 19,
+        "deleted": false,
+        "createdAt": {
+          "$date": "2023-10-26T07:09:44.762Z"
+        },
+        "updatedAt": {
+          "$date": "2023-10-26T07:09:44.762Z"
+        },
+        "_id": 4
+      },
+      {
+        "item": "Đồ thui",
+        "quantity": 1,
+        "discount": 0,
+        "total": 83,
+        "deleted": false,
+        "createdAt": {
+          "$date": "2023-10-26T07:09:44.763Z"
+        },
+        "updatedAt": {
+          "$date": "2023-10-26T07:09:44.763Z"
+        },
+        "_id": 5
+      },
+      {
+        "item": "Đồ thui",
+        "quantity": 1,
+        "discount": 0,
+        "total": 14,
+        "deleted": false,
+        "createdAt": {
+          "$date": "2023-10-26T07:09:44.763Z"
+        },
+        "updatedAt": {
+          "$date": "2023-10-26T07:09:44.763Z"
+        },
+        "_id": 6
+      }
+    ],
+    "checkinTime": {
+      "$date": "2023-10-26T07:09:39.173Z"
+    },
+    "expiredTime": {
+      "$date": "2023-10-26T07:39:39.173Z"
+    },
+    "status": 0,
+    "deleted": false,
+    "createdAt": {
+      "$date": "2023-10-26T07:09:44.782Z"
+    },
+    "updatedAt": {
+      "$date": "2023-10-26T07:09:44.782Z"
+    }
+  },
+  {
+    "_id": 5,
+    "fullname": "123",
+    "phoneNo": "123",
+    "restaurantId": 2,
+    "tableId": [
+      2,
+      3,
+      10
+    ],
+    "tableCount": 3,
+    "order": [
+      {
+        "item": "Đồ sào",
+        "quantity": 1,
+        "discount": 0,
+        "total": 49,
+        "_id": {
+          "$oid": "653a115c8caacee9be5dee9c"
+        }
+      },
+      {
+        "item": "Đồ uống",
+        "quantity": 2,
+        "discount": 0,
+        "total": 86,
+        "_id": {
+          "$oid": "653a115c8caacee9be5dee9d"
+        }
+      },
+      {
+        "item": "Đồ sào",
+        "quantity": 1,
+        "discount": 0,
+        "total": 84,
+        "_id": {
+          "$oid": "653a115c8caacee9be5dee9e"
+        }
+      }
+    ],
+    "checkinTime": {
+      "$date": "2023-10-26T07:12:20.319Z"
+    },
+    "expiredTime": {
+      "$date": "2023-10-26T07:42:20.319Z"
+    },
+    "status": 0,
+    "deleted": false,
+    "createdAt": {
+      "$date": "2023-10-26T07:12:28.315Z"
+    },
+    "updatedAt": {
+      "$date": "2023-10-26T07:12:28.315Z"
+    }
+  },
+  {
+    "_id": 6,
+    "fullname": "123",
+    "phoneNo": "123",
+    "restaurantId": 2,
+    "tableId": [
+      2,
+      3
+    ],
+    "tableCount": 2,
+    "order": [
+      {
+        "item": "Đồ uống",
+        "quantity": 1,
+        "discount": 0,
+        "total": 19
+      },
+      {
+        "item": "Đồ thui",
+        "quantity": 1,
+        "discount": 0,
+        "total": 83
+      },
+      {
+        "item": "Đồ thui",
+        "quantity": 1,
+        "discount": 0,
+        "total": 14
+      }
+    ],
+    "checkinTime": {
+      "$date": "2023-10-26T07:21:38.456Z"
+    },
+    "expiredTime": {
+      "$date": "2023-10-26T07:51:38.456Z"
+    },
+    "status": 0,
+    "deleted": false,
+    "createdAt": {
+      "$date": "2023-10-26T07:21:45.186Z"
+    },
+    "updatedAt": {
+      "$date": "2023-10-26T07:21:45.186Z"
+    }
+  }
+]
