@@ -23,7 +23,7 @@ const ComboItem = ({ item, index }) => {
                             {item.price}</span>
                     </h1>
                     <p className="card-text">{item.description}</p>
-                    <p className="card-text"><small className="text-muted">{item.countMenu}</small></p>
+                    <p className="card-text"><small className="text-muted">{item.countMenu} món</small></p>
                 </div>
                 <div className='mt-3 position-relative'>
                     <img src={item.images} alt='...' className="img-fluid card-img-bottom" />

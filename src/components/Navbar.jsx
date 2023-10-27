@@ -12,7 +12,6 @@ const Navbar = () => {
 
   }, [modeTab]);
 
-  console.log("Navbar", modeTab)
   return (
     <div
       className="my-header text-my-color-navbar p-2 d-flex align-items-center border-bottom text-uppercase border-warning-subtle"

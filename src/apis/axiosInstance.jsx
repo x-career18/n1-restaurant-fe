@@ -15,4 +15,18 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+axiosInstance.interceptors.response.use(
+  response => {
+      return response
+  },
+  error => {
+      if (!error.response) {
+          console.log("Please check your internet connection.");
+          // error.errorStatus = 'Error: Network Error';
+      }
+
+      return Promise.reject(error)
+  }
+)
+
 export default axiosInstance;

@@ -7,11 +7,12 @@ import { randomInt } from "../utils/Random";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { param } from "../contexts/QueryParam";
 import { getIdByRestaurantName } from "../utils/TableUtil";
+import TableContext from "../contexts/TableContext/TableContext";
 
 const colorStatus = {
   "1": "color-free",
-  "2": "color-reservation",
-  "3": "color-active",
+  "0": "color-reservation",
+  "2": "color-active",
 };
 
 const styleDefault = "ratio ratio-1x1 d-flex flex-column align-items-center justify-content-center fs-4";
@@ -24,11 +25,12 @@ const borderSelect = {
 // Hiển thị sơ đồ bàn của nhà hàng được chọn
 const Table = () => {
   const { restaurants } = useContext(AppContext);
+  const { getAllTableByRestaurant, tableMap, seTableMap } = useContext(TableContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [mode, contextHolder] = notification.useNotification(); // success info warning error
   const [filterTableStatusList, setfilterTableStatusList] = useState([]); // Lọc bàn theo yêu cầu (trống, đã đặt, đang hoạt động)
   const [modeFilter, setModeFilter] = useState("All"); // Lọc bàn theo yêu cầu (trống, đã đặt, đang hoạt động)
-  const [tableMap, seTableMap] = useState([]);
+
   const navigate = useNavigate();
 
   const newParam = searchParams.get(param.selectTable)?.split(",");
@@ -42,34 +44,26 @@ const Table = () => {
     }
 
     // Lấy toàn bộ table của nhà hàng, tiến hành hiển thị danh sách lọc
-    let tables = [];
-    let maxTable = 10;
-    if (restaurantsId == 2) {
-      maxTable = 20;
-    }
-    if (restaurantsId == 3) {
-      maxTable = 30;
-    }
-    if (restaurantsId == 4) {
-      maxTable = 40;
-    }
+    getAllTableByRestaurantID(restaurantsId);
 
-    for (let index = 1; index <= maxTable; index++) {
+  }, [restaurants]);
+
+  const getAllTableByRestaurantID = async (restaurantsId) => {
+    const tableList = await getAllTableByRestaurant(restaurantsId);
+    let tables = [];
+    for (let index = 0; index < tableList.length; index++) {
       const item = createTable({
-        tableId: index,
-        image: "/table/CN_6.png",
-        status: randomInt(3, 1),
-        floor: '1',
-        tablenumber: `Bàn số ${index}`,
-        numberSeat: "6",
-        shape: "Vuông"
+        tableId: tableList[index]._id,
+        tableName: tableList[index].name,
+        image: "/table/" + tableList[index].images,
+        status: tableList[index].status,
+        restaurantId: tableList[index].restaurantId,
       });
       item["selected"] = false;
       tables.push(item);
     }
-
     seTableMap(tables);
-  }, [restaurants]);
+  };
 
   useEffect(() => {
     filterStatusTable(modeFilter);
@@ -87,15 +81,14 @@ const Table = () => {
 
     // Cập nhật chọn bàn
     if (newParam == null || newParam == "") {
-      searchParams.set(param.selectTable, `${table.tableId}`);
+      searchParams.set(param.selectTable, `${table.tableName}`);
       setSearchParams(searchParams);
       return;
     }
 
-    let listTableId = newParam.map(Number);
-    let filter = listTableId.filter((item) => item !== table.tableId);
-    if (listTableId.length === filter.length) {
-      filter.push(table.tableId);
+    let filter = newParam.filter((item) => item !== table.tableName);
+    if (newParam.length === filter.length) {
+      filter.push(table.tableName);
     }
 
     filter.sort((a, b) => a - b);
@@ -116,7 +109,7 @@ const Table = () => {
     if (status === "empty") {
       newList = tableMap.filter((e) => e.status === 1);
     } else if (status === "booked") {
-      newList = tableMap.filter((e) => e.status === 2);
+      newList = tableMap.filter((e) => e.status === 0);
     } else if (status === "active") {
       newList = tableMap.filter((e) => e.status === 3);
     } else {
@@ -129,11 +122,11 @@ const Table = () => {
   }
 
   const refreshTableList = () => {
+    const restaurantsId = getIdByRestaurantName(restaurants, searchParams.get(param.restaurants));
     searchParams.delete(param.selectTable);
     setSearchParams(searchParams);
+    getAllTableByRestaurantID(restaurantsId);
   };
-
-  console.log("Table", searchParams.get(param.restaurants));
 
   return (
 
@@ -155,7 +148,7 @@ const Table = () => {
                         <div key={index} className="col pb-4">
                           <button
                             type="button"
-                            className={`${styleDefault} ${colorStatus[item.status]} ${borderSelect[newParam == null ? false : newParam == "" ? false : newParam.map(Number).includes(item.tableId)]}`}
+                            className={`${styleDefault} ${colorStatus[item.status]} ${borderSelect[newParam == null ? false : newParam == "" ? false : newParam.includes(item.tableName)]}`}
                             onClick={() => handleChooseTable(item)}
                           >
                             <img
@@ -166,7 +159,7 @@ const Table = () => {
                                 height: "100%",
                               }}
                             />
-                            A {item.tableId}
+                            A {item.tableName}
                           </button>
                         </div>
                       );

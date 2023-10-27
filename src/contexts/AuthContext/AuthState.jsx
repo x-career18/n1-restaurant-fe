@@ -60,6 +60,7 @@ const AuthState = ({ children }) => {
       isAuthenticated: false,
       user: {},
     });
+    setModeTab(customer);
   };
 
   useEffect(() => {
@@ -72,7 +73,7 @@ const AuthState = ({ children }) => {
     }
 
   }, []);
-  console.log("AuthState");
+
   return (
     <AuthContext.Provider
       value={{

@@ -10,20 +10,18 @@ export const Table = {
 };
 
 const createTable = ({
-    restaurantName,
+    restaurantId,
     tableId,
-    totalCountTable,
-    checkinTime,
     status,
     image,
+    tableName,
 }) => {
     return {
-        restaurantName,
+        restaurantId,
         tableId,
-        totalCountTable,
-        checkinTime,
         status,
-        image
+        image,
+        tableName,
     }
 }
 

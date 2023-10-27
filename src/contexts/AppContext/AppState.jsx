@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AppContext from "./AppContext";
 import { randomInt } from "../../utils/Random";
-import createRestaurant from "../../models/Restaurant";
 import createTable from "../../models/Table";
-import { COMBO, FOOD, RESTAURANTS } from "../../utils/LoadImage";
-import { customer, manage } from "../../modelUI/NavbarLink";
+import { FOOD } from "../../utils/LoadImage";
 import createFood from "../../models/Food";
 import { category } from "../../models/CategoryFood";
-import reservationAPI from "../../apis/reservationAPI";
 import restaurantAPI from "../../apis/restaurantAPI";
 import comboAPI from "../../apis/comboAPI";
 
@@ -20,6 +17,7 @@ const AppState = ({ children }) => {
   const [foodOrder, setFoodOrder] = useState([]);
   const [menu, setMenu] = useState([]);
   const [combo, setCombo] = useState([]);
+  const [requestError, setRequestError] = useState(false);
 
   useEffect(() => {
     let tables = [];
@@ -36,8 +34,9 @@ const AppState = ({ children }) => {
       tables.push(item);
     }
 
-    getAllRestaurant().then((data) => setRestaurants(data));
-    getAllCombo().then((data) => setCombo(data));
+    getAllRestaurant();
+    getAllCombo();
+
     let menu = [];
     for (let index = 0; index < 50; index++) {
       const categoryId = randomInt(4, 1);
@@ -60,18 +59,32 @@ const AppState = ({ children }) => {
   }, []);
 
   const getAllRestaurant = async () => {
-    const response = await restaurantAPI.getAll();
-    // Check response
-    if (response.data.success) {
-      return response.data.data;
+    try {
+      const response = await restaurantAPI.getAll();
+
+      if (response.data.success) {
+        setRestaurants(response.data.data)
+      }
+      setRequestError(false);
+    } catch (error) {
+      setRestaurants([]);
+      setRequestError(true);
     }
+
   }
 
   const getAllCombo = async () => {
-    const response = await comboAPI.getAll();
-    // Check response
-    if (response.data.success) {
-      return response.data.data;
+    try {
+      const response = await comboAPI.getAll();
+      // Check response
+      if (response.data.success) {
+        setCombo(response.data.data);
+      }
+
+      setRequestError(false);
+    } catch (error) {
+      setCombo([]);
+      setRequestError(true);
     }
   }
 
@@ -91,8 +104,6 @@ const AppState = ({ children }) => {
     setTableList(newTableList);
   };
 
-  console.log("AppState");
-
   return (
     <AppContext.Provider
       value={{
@@ -104,6 +115,7 @@ const AppState = ({ children }) => {
         foodOrder, setFoodOrder,
         menu, setMenu,
         combo,
+        requestError, setRequestError
       }}
     >
       {children}

@@ -11,6 +11,8 @@ import FoodOrder from "./food/FoodOrder";
 import reservationAPI from "../apis/reservationAPI";
 import { param } from "../contexts/QueryParam";
 import { getIdByRestaurantName } from "../utils/TableUtil";
+import tableAPI from "../apis/tableAPI";
+import TableContext from "../contexts/TableContext/TableContext";
 
 const Reservation = () => {
   const { restaurants, reservation, setReservation, selectList, setSelectList, foodOrder, setFoodOrder } =
@@ -36,11 +38,42 @@ const Reservation = () => {
     email: Yup.string(),
   });
 
-  function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
+  async function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
     if (!checkSelectTable(selectTable) || !checkTime(checkInTime)) {
       setSubmitting(false);
       return;
     }
+
+    const restaurantId = getIdByRestaurantName(restaurants, restaurantName);
+    const listTableName = selectTable.map(Number);
+
+    // Kiểm tra bàn
+    const tableList = await checkTableFree(restaurantId);
+    if (!tableList || tableList.length == 0) {
+      setSubmitting(false);
+      return;
+    }
+
+    const filterTableFree = tableList.filter((item) => item.status == 1);
+    let isTableNotFree = [];
+    let listTableId = [];
+    for (let index = 0; index < listTableName.length; index++) {
+      const found = filterTableFree.find((element) => element.name == listTableName[index]);
+      if (!found) {
+        isTableNotFree.push(listTableName[index]);
+        break;
+      }
+      listTableId.push(found._id);
+    }
+
+    if (isTableNotFree.length > 0) {
+      openNotificationWithIcon(
+        "info",
+        `Bàn (${isTableNotFree.toString()}) bạn đặt không trống.!`
+      );
+      return;
+    }
+
 
     // Lấy thông tin của foodOrder
     let foodOrderList = [];
@@ -63,21 +96,19 @@ const Reservation = () => {
     // Tính expiredTime từ checkInTime
     const expiredTime = checkInTime.add(30, 'minutes');
 
-    const listTableId = selectTable.map(Number);
-
     // Tạo thông tin để gửi
     const newReservation = {
       fullname: fields.fullName,
       phoneNo: fields.phone,
-      restaurantId: getIdByRestaurantName(restaurants, restaurantName),
-      tableId: listTableId,
-      tableCount: listTableId.length,
+      restaurantId: restaurantId,
+      tableId: listTableName,
+      tableCount: listTableName.length,
       order: foodOrderList,
       checkinTime: checkInTime.$d,
       expiredTime: expiredTime.$d,
     }
 
-    createReservation(newReservation);
+    await createReservation(newReservation);
 
     searchParams.delete(param.selectTable);
     setSearchParams(searchParams);
@@ -108,6 +139,22 @@ const Reservation = () => {
       );
     }
     setLoading(false);
+  }
+
+  const checkTableFree = async (restaurantId) => {
+    try {
+      const response = await tableAPI.getByRestaurantId(restaurantId);
+
+      if (response.data.success) {
+        return response.data.data;
+      }
+    } catch (error) {
+      openNotificationWithIcon(
+        "error",
+        "Hệ thống hiện không hoạt động."
+      );
+      return null;
+    }
   }
 
 
@@ -155,7 +202,7 @@ const Reservation = () => {
     setModalShow(true);
   };
 
-  console.log("Reservation");
+  // console.log("Reservation");
 
   return (
     <div className="container pt-2 h-100">
@@ -175,7 +222,7 @@ const Reservation = () => {
             <label className="col px-0 fs-5 ">
               {capitalizeFirstLetter("Bàn số")}
             </label>
-            <label className="col px-0 fs-5 "> {selectTable}</label>
+            <label className="col px-0 fs-5 "> {searchParams.get(param.selectTable) ?? ""}</label>
           </div>
           <hr />
           <div className="fs-4 fw-bold">Thông tin liên hệ</div>

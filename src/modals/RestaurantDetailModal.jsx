@@ -20,6 +20,7 @@ const RestaurantDetailModal = ({ show, onHide, restaurant }) => {
     };
 
     if (!restaurant) return;
+    
     const handleParam = () => {
         onHide();
         navigate(`/table?${param.restaurants}=${restaurant.name}`);
