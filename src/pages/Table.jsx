@@ -8,6 +8,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { param } from "../contexts/QueryParam";
 import { getIdByRestaurantName } from "../utils/TableUtil";
 import TableContext from "../contexts/TableContext/TableContext";
+import AuthContext from "../contexts/AuthContext/AuthContext";
 
 const colorStatus = {
   "1": "color-free",
@@ -25,6 +26,7 @@ const borderSelect = {
 // Hiển thị sơ đồ bàn của nhà hàng được chọn
 const Table = () => {
   const { restaurants } = useContext(AppContext);
+  const { auth } = useContext(AuthContext);
   const { getAllTableByRestaurant, tableMap, seTableMap } = useContext(TableContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [mode, contextHolder] = notification.useNotification(); // success info warning error

@@ -1,17 +1,43 @@
 import React, { useContext, useEffect } from "react";
 import Menu from "./Menu";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { customer } from "../modelUI/NavbarLink";
 import AuthContext from "../contexts/AuthContext/AuthContext";
+import { Dropdown } from "antd";
+import { FaChevronDown, FaPowerOff, FaRegUser } from "react-icons/fa6";
+
+const logo =
+  "https://drive.google.com/uc?export=view&id=1kvFDWul0NlJiF4Pc5fCGAdMqXhWWkUPY";
 
 const Navbar = () => {
-  const { modeTab } = useContext(AuthContext);
+  const { modeTab, auth, handleLogout } = useContext(AuthContext);
 
-  // Cập nhật navbar khi login/logout
-  useEffect(() => {
-
-  }, [modeTab]);
-
+  const items = [
+    {
+      key: '1',
+      label: (
+        <div>
+          <FaRegUser className="text-muted ms-2" />
+          <Link to="/profile" className="text-muted ms-2">
+            Profile
+          </Link>
+        </div>)
+    },
+    {
+      key: '2',
+      label: (
+        <div>
+          <FaPowerOff className="text-muted ms-2 text-danger" />
+          <button
+            onClick={() => { handleLogout() }}
+            className="text-muted ms-2 btn btn-danger"
+          >
+            Logout
+          </button>
+        </div>
+      ),
+    },
+  ];
   return (
     <div
       className="my-header text-my-color-navbar p-2 d-flex align-items-center border-bottom text-uppercase border-warning-subtle"
@@ -64,6 +90,16 @@ const Navbar = () => {
                   </NavLink>
                 );
               })}
+              {
+                auth.isAuthenticated &&
+                <Dropdown menu={{
+                  items,
+                }} placement="bottomRight">
+                  <NavLink className="nav-link">
+                    User
+                  </NavLink>
+                </Dropdown>
+              }
             </div>
           </div>
         </div>

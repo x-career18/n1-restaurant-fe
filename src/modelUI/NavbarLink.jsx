@@ -112,12 +112,6 @@ const staff = {
             path: "/checkreservation",
             text: "CheckInfo"
         },
-    ],
-    navLinkRight: [
-        {
-            path: "/logout",
-            text: "Logout"
-        }
     ]
 }
 

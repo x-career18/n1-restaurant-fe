@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 import authAPI from "../../apis/authAPI";
 import { customer, manage, staff } from "../../modelUI/NavbarLink";
+import { useNavigate } from "react-router-dom";
 
 const AuthState = ({ children }) => {
   const [auth, setAuth] = useState({
@@ -9,6 +10,7 @@ const AuthState = ({ children }) => {
     user: {},
   });
   const [modeTab, setModeTab] = useState({});
+  const navigate = useNavigate();
 
   //   1. Call API /me => userInfo
   //   2. Update auth state
@@ -60,7 +62,9 @@ const AuthState = ({ children }) => {
       isAuthenticated: false,
       user: {},
     });
+    // localStorage.removeItem("accessToken");
     setModeTab(customer);
+    navigate("/");
   };
 
   useEffect(() => {
@@ -77,7 +81,7 @@ const AuthState = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        auth,
+        auth, setAuth,
         handleLogin,
         handleLogout,
         modeTab,

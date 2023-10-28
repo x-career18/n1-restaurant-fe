@@ -9,8 +9,12 @@ import { FaLock, FaRightToBracket } from "react-icons/fa6";
 import { RESTAURANTS } from "../../utils/LoadImage";
 import AuthContext from "../../contexts/AuthContext/AuthContext";
 import { customer, manage, staff } from "../../modelUI/NavbarLink";
+import { param } from "../../contexts/QueryParam";
+import { getIdByRestaurantName } from "../../utils/TableUtil";
+import AppContext from "../../contexts/AppContext/AppContext";
 
 const Login = () => {
+  const { restaurants } = useContext(AppContext);
   const { setAuth, setModeTab } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,20 +34,26 @@ const Login = () => {
 
   const navigateByRole = (role) => {
     // 1: manage, 2: staff
-    if (role === "manage") {
-      setModeTab(manage);
-      navigate("/manage/account");
-    } else if (role === "staff") {
-      setModeTab(staff);
-      navigate("/table");
-    }
 
     setAuth({
       isAuthenticated: true,
       user: {
         role,
+        restaurantId: 1
       },
     });
+
+    if (role === "manage") {
+      setModeTab(manage);
+      navigate("/");
+    } else if (role === "staff") {
+      setModeTab(staff);
+      const name = restaurants.find((item) => item._id === 1).name;
+      navigate(`/table?${param.restaurants}=${name}`);
+    } else {
+      setModeTab(customer);
+      navigate("/");
+    }
   };
 
   async function onSubmit(values) {
@@ -89,8 +99,8 @@ const Login = () => {
                   <div className="col d-none d-md-block border-end">
                     <div className="d-flex align-items-center justify-content-center w-100 h-100">
                       <img
-                        src={`${RESTAURANTS[0]}`}
-                        alt={`${RESTAURANTS[0]}`}
+                        src={`${RESTAURANTS[0]} `}
+                        alt={`${RESTAURANTS[0]} `}
                         style={{
                           width: "70%",
                           height: "70%",
@@ -108,11 +118,11 @@ const Login = () => {
                             <Field
                               name={item.fieldName}
                               type={item.type ? item.type : "text"}
-                              placeholder={`Enter ${item.label}`}
+                              placeholder={`Enter ${item.label} `}
                               className={
                                 "form-control my-3" +
                                 (errors[item.fieldName] &&
-                                touched[item.fieldName]
+                                  touched[item.fieldName]
                                   ? " is-invalid"
                                   : "")
                               }
