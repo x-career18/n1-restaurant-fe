@@ -49,7 +49,7 @@ const Login = () => {
     } else if (role === "staff") {
       setModeTab(staff);
       const name = restaurants.find((item) => item._id === 1).name;
-      navigate(`/table?${param.restaurants}=${name}`);
+      navigate(`/?${param.restaurants}=${name}`);
     } else {
       setModeTab(customer);
       navigate("/");

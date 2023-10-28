@@ -54,7 +54,7 @@ const Order = () => {
                         const styleStatus =
                             item.status === 1
                                 ? "color-free"
-                                : item.status === 2
+                                : item.status === 0
                                     ? "color-reservation"
                                     : "color-active";
                         return (

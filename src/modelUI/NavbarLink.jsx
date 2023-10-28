@@ -56,7 +56,7 @@ const customer = {
         },
         {
             path: "/checkreservation",
-            text: "CheckInfo"
+            text: "Reservation"
         },
     ],
     navLinkRight: [
@@ -85,12 +85,6 @@ const manage = {
             path: "/manage",
             text: "Manage"
         },
-    ],
-    navLinkRight: [
-        {
-            path: "/logout",
-            text: "Logout"
-        },
     ]
 };
 
@@ -101,16 +95,16 @@ const staff = {
             text: "HomePage"
         },
         {
-            path: "/menu",
-            text: "Menu"
+            path: "/order",
+            text: "Order"
         },
         {
-            path: "/table",
-            text: "Table"
+            path: "/check-in",
+            text: "Check In"
         },
         {
-            path: "/checkreservation",
-            text: "CheckInfo"
+            path: "/payment",
+            text: "Payment"
         },
     ]
 }

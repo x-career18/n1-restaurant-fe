@@ -1,4 +1,5 @@
 import { ManageNavbar } from "../modelUI/ManageNavbar";
+import CheckIn from "../pages/CheckIn";
 import CheckReservation from "../pages/CheckReservation";
 import ComboMenu from "../pages/Combo-menu";
 import Home from "../pages/Home";
@@ -70,6 +71,12 @@ const routes = [
     {
         path: "/combo-menu",
         component: <ComboMenu />,
+        isPrivate: false,
+        isAdmin: false
+    },
+    {
+        path: "/check-in",
+        component: <CheckIn />,
         isPrivate: false,
         isAdmin: false
     },
