@@ -5,7 +5,7 @@ import Food from '../pages/food/Food';
 import { useSearchParams } from 'react-router-dom';
 import { param } from '../contexts/QueryParam';
 
-const MenuModal = ({ show, onHide , isCanel}) => {
+const MenuModal = ({ show, onHide, isCanel, tableName }) => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const restaurantName = searchParams.get(param.restaurants);
@@ -26,12 +26,12 @@ const MenuModal = ({ show, onHide , isCanel}) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    {restaurantName}
+                    {tableName ? tableName : restaurantName}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {/* Hiển thị menu của nhà hàng */}
-                <Food showDesc={false} isModal={true}/>
+                <Food showDesc={false} isModal={true} />
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={handleCanel}>Close</Button>

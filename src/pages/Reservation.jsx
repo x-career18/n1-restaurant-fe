@@ -74,7 +74,6 @@ const Reservation = () => {
       return;
     }
 
-
     // Lấy thông tin của foodOrder
     let foodOrderList = [];
     for (let index = 0; index < foodOrder.length; index++) {

@@ -1,17 +1,40 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { notification } from "antd";
-import Main from '../components/Main';
-import AppContext from '../contexts/AppContext/AppContext';
-import { useNavigate } from 'react-router-dom';
 import MenuModal from '../modals/MenuModal';
+import tableAPI from '../apis/tableAPI';
+import AuthContext from '../contexts/AuthContext/AuthContext';
+import createTable from '../models/Table';
+import reservationAPI from '../apis/reservationAPI';
+import createReservation from '../models/Reservation';
+import { pasreStringtoData } from '../utils/DateUtil';
 
 const Order = () => {
     const [mode, contextHolder] = notification.useNotification(); // success info warning error
-    const { tableList } = useContext(AppContext);
-    const navigate = useNavigate();
+    const { auth } = useContext(AuthContext);
     const [modalShow, setModalShow] = useState(false);
-    const [selectTableOrder, setSelectTableOrder] = useState(-1);
-    let tableActiveList = [];
+    const [selectTable, setSelectTable] = useState(null);
+    const [tableActiveList, settableActiveList] = useState([]);
+
+    useEffect(() => {
+        getAllReservationByRestaurantID();
+    }, []);
+
+    const getAllReservationByRestaurantID = async () => {
+        try {
+            const response = await reservationAPI.getAllByRestaurantId(auth.user.restaurantId, 3);
+            if (response.data.success) {
+                const tableList = response.data.data;
+                let tables = [];
+                for (let index = 0; index < tableList.length; index++) {
+                    const item = createReservation(tableList[index]);
+                    tables.push(item);
+                }
+                settableActiveList(tables);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    }
 
     const openNotificationWithIcon = (type, message) => {
         mode[type]({
@@ -25,15 +48,14 @@ const Order = () => {
         if (table.status !== 3) {
             openNotificationWithIcon(
                 "warning",
-                "Bạn chỉ được phép chọn bàn đang hoạt động.!"
+                "Bạn chỉ được phép chọn bàn đang mở.!"
             );
             return;
         }
-        setSelectTableOrder(table.tableId);
+        setSelectTable(table.tableId.toString());
         setModalShow(true);
     };
 
-    tableActiveList = tableList.filter((item) => item.status === 3);
 
     return (
         <>
@@ -50,7 +72,7 @@ const Order = () => {
                 <div className="row row-cols-3 row-cols-lg-4">
                     {tableActiveList.map((item, index) => {
                         const styleDefault =
-                            "ratio ratio-1x1 d-flex flex-column align-items-center justify-content-center p-3 fs-4 border-0";
+                            "p-3 fs-4 border-0";
                         const styleStatus =
                             item.status === 1
                                 ? "color-free"
@@ -64,25 +86,29 @@ const Order = () => {
                                     className={`${styleDefault} ${styleStatus}`}
                                     onClick={() => handleChooseTable(item)}
                                 >
-                                    <img
-                                        src={item.image}
-                                        alt={item.image}
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                        }}
-                                    />
-                                    A {item.tableId}
+                                    <h3>
+                                        Bàn đặt: {item.tableId.toString()}
+                                    </h3>
+                                    <div className='row mx-0 justify-content-start'>
+                                        Tên: {item.fullname}
+                                    </div>
+                                    <div className='row mx-0 justify-content-start'>
+                                        SĐT: {item.phoneNo}
+                                    </div>
+                                    <div className='row mx-0 justify-content-start'>
+                                        CheckIn: {pasreStringtoData(item.updatedAt)}
+                                    </div>
                                 </button>
                             </div>
                         );
+
                     })}
                 </div>
             </div>
             <MenuModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                tableName={"Bàn số "+selectTableOrder}
+                tableName={"Bàn số " + selectTable}
             />
         </>
     );

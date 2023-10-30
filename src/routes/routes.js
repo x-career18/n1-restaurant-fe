@@ -3,13 +3,12 @@ import CheckIn from "../pages/CheckIn";
 import CheckReservation from "../pages/CheckReservation";
 import ComboMenu from "../pages/Combo-menu";
 import Home from "../pages/Home";
-import Order from "../pages/Order";
 import Payment from "../pages/Payment";
-import Reservation from "../pages/Reservation";
 import Table from "../pages/Table";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import Food from "../pages/food/Food";
+import Order from "../pages/Order";
 import Manage from "../pages/manages/Manage";
 
 const routes = [
@@ -40,7 +39,7 @@ const routes = [
     {
         path: "/order",
         component: <Order />,
-        isPrivate: false,
+        isPrivate: true,
         isAdmin: false,
     },
     {
@@ -52,13 +51,13 @@ const routes = [
     {
         path: "/payment",
         component: <Payment />,
-        isPrivate: false,
+        isPrivate: true,
         isAdmin: false,
     },
     {
         path: "/manage",
         component: <Manage />,
-        isPrivate: false,
+        isPrivate: true,
         isAdmin: false,
         navBar: ManageNavbar
     },
@@ -77,7 +76,7 @@ const routes = [
     {
         path: "/check-in",
         component: <CheckIn />,
-        isPrivate: false,
+        isPrivate: true,
         isAdmin: false
     },
 ];
