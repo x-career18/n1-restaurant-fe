@@ -1,0 +1,26 @@
+[
+  {
+    "_id": 1,
+    "fullName": "An",
+    "gender": "male",
+    "username": "manage",
+    "password": "aA@123",
+    "avata": "1",
+    "status": 1,
+    "role": 1,
+    "restaurantId": 1,
+    "deleted": false
+  },
+  {
+    "_id": 2,
+    "fullName": "An",
+    "gender": "male",
+    "username": "staff",
+    "password": "aA@123",
+    "avata": "1",
+    "status": 1,
+    "role": 2,
+    "restaurantId": 1,
+    "deleted": false
+  }
+]

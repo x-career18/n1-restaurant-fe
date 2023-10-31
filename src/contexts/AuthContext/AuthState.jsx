@@ -12,46 +12,15 @@ const AuthState = ({ children }) => {
   const [modeTab, setModeTab] = useState({});
   const navigate = useNavigate();
 
-  //   1. Call API /me => userInfo
-  //   2. Update auth state
-  // const handleLogin = async () => {
-  //     try {
-  //         const response = await authAPI.authInfo();
-  //         const data = response.data;
-  //         setAuth({
-  //             isAuthenticated: true,
-  //             user: data.data.userInfo,
-  //         });
-  //         return data.data.userInfo
-  //     } catch (error) {
-  //         console.log(error);
-  //     }
-  // };
-
-  // const handleLogout = () => {
-  //     setAuth({
-  //         isAuthenticated: false,
-  //         user: {},
-  //     });
-  // };
-
-  // useEffect(() => {
-  //     const accessToken = localStorage.getItem("accessToken");
-  //     // Call API /me => check token => user, isAuthenticated
-  //     if (accessToken) {
-  //         handleLogin();
-  //     }
-  // }, []);
-
   const handleLogin = async () => {
     try {
       const response = await authAPI.authInfo();
       const data = response.data;
       setAuth({
         isAuthenticated: true,
-        user: data.data.userInfo,
+        user: data.data,
       });
-      return data.data.userInfo;
+      navigateByRole(data.data.role);
     } catch (error) {
       console.log(error);
     }
@@ -62,14 +31,13 @@ const AuthState = ({ children }) => {
       isAuthenticated: false,
       user: {},
     });
-    // localStorage.removeItem("accessToken");
+    localStorage.removeItem("x-access-token");
     setModeTab(customer);
     navigate("/");
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    // Call API /me => check token => user, isAuthenticated
+    const accessToken = localStorage.getItem("x-access-token");
     if (accessToken) {
       handleLogin();
     } else {
@@ -77,6 +45,17 @@ const AuthState = ({ children }) => {
     }
 
   }, []);
+
+  const navigateByRole = (role) => {
+    if (role == 1) {
+      setModeTab(manage);
+    } else if (role == 2) {
+      setModeTab(staff);
+    } else {
+      setModeTab(customer);
+    }
+    navigate("/");
+  };
 
   return (
     <AuthContext.Provider

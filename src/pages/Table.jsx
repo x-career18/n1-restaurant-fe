@@ -112,7 +112,7 @@ const Table = () => {
     } else if (status === "booked") {
       newList = tableMap.filter((e) => e.status === 0);
     } else if (status === "active") {
-      newList = tableMap.filter((e) => e.status === 3);
+      newList = tableMap.filter((e) => e.status === 2);
     } else {
       newList = tableMap;
     }

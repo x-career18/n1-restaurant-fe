@@ -8,9 +8,9 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("x-access-token");
   if (accessToken) {
-    config.headers["accept-token"] = accessToken;
+    config.headers["x-access-token"] = accessToken;
   }
   return config;
 });

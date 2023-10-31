@@ -2,23 +2,15 @@ import React, { useContext, useState } from "react";
 import LoginUI from "../../modelUI/Login";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
-import Main from "../../components/Main";
-// import authAPI from "../apis/authAPI";
 import { FaLock, FaRightToBracket } from "react-icons/fa6";
 import { RESTAURANTS } from "../../utils/LoadImage";
 import AuthContext from "../../contexts/AuthContext/AuthContext";
-import { customer, manage, staff } from "../../modelUI/NavbarLink";
-import { param } from "../../contexts/QueryParam";
-import { getIdByRestaurantName } from "../../utils/TableUtil";
-import AppContext from "../../contexts/AppContext/AppContext";
+import authAPI from "../../apis/authAPI";
 
 const Login = () => {
-  const { restaurants } = useContext(AppContext);
-  const { setAuth, setModeTab } = useContext(AuthContext);
+  const { handleLogin } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("Username is required"),
@@ -32,49 +24,19 @@ const Login = () => {
     userpassword: "",
   };
 
-  const navigateByRole = (role) => {
-    // 1: manage, 2: staff
-
-    setAuth({
-      isAuthenticated: true,
-      user: {
-        role,
-        restaurantId: 1
-      },
-    });
-
-    if (role === "manage") {
-      setModeTab(manage);
-      navigate("/");
-    } else if (role === "staff") {
-      setModeTab(staff);
-      const name = restaurants.find((item) => item._id === 1).name;
-      navigate(`/?${param.restaurants}=${name}`);
-    } else {
-      setModeTab(customer);
-      navigate("/");
-    }
-  };
-
   async function onSubmit(values) {
     try {
       setLoading(true);
       setError(null);
-      // const response = await authAPI.login({
-      //     username: values.username,
-      //     password: values.userpassword,
-      // });
+      const response = await authAPI.login({
+        username: values.username,
+        password: values.userpassword,
+      });
 
-      // localStorage.setItem("accessToken", response.data.data.acceptToken);
+      localStorage.setItem("x-access-token", response.data.data);
 
-      // const userInfo = await handleLogin();
-      // if (userInfo.role_id === 1) {
-      //     navigate("/kiots");
-      // } else {
-      //     navigate("/");
-      // }
+      await handleLogin();
 
-      navigateByRole(values.username);
     } catch (error) {
       console.log(error);
       setError(error.response.data.error);
@@ -94,9 +56,13 @@ const Login = () => {
         >
           {({ errors, touched, isSubmitting, setFieldValue }) => {
             return (
-              <div className="rounded-1 border w-75 h-50">
+              <div
+                style={{
+                  minHeight: 560
+                }}
+                className="rounded-1 border w-75 h-50">
                 <div className=" row mx-0 h-100">
-                  <div className="col d-none d-md-block border-end">
+                  <div className="col d-none d-md-block border-end h-100">
                     <div className="d-flex align-items-center justify-content-center w-100 h-100">
                       <img
                         src={`${RESTAURANTS[0]} `}

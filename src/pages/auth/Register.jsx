@@ -66,7 +66,11 @@ const Register = () => {
                 >
                     {({ errors, touched, isSubmitting, setFieldValue }) => {
                         return (
-                            <div className='rounded-1 border w-75 h-75'>
+                            <div
+                                style={{
+                                    minHeight: 735
+                                }}
+                                className='rounded-1 border w-75 h-75'>
                                 <div className=' row h-100'>
                                     <div className='col d-none d-md-block border-end'>
                                         <div className='d-flex align-items-center justify-content-center w-100 h-100'>
