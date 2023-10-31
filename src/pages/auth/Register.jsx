@@ -2,14 +2,12 @@ import React, { useState } from 'react'
 import RegisterUI from '../../modelUI/Register';
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { NavLink, useNavigate } from "react-router-dom";
-import Main from '../../components/Main';
-// import authAPI from "../apis/authAPI";
+import { useNavigate } from "react-router-dom";
 import {
-    FaLock,
     FaRightToBracket,
 } from "react-icons/fa6";
 import { RESTAURANTS } from '../../utils/LoadImage';
+import authAPI from '../../apis/authAPI';
 
 
 const Register = () => {
@@ -19,10 +17,10 @@ const Register = () => {
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required("Username is required"),
-        userpassword: Yup.string()
-            .concat(Yup.string().required("Password is required"))
-            .min(5, "Password must be at least 5 characters"),
+        userpassword: Yup.string().required()
+            .matches(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/, "Password requires a number, a lowercase letter, an uppercase letter, a symbol & 6 characters minimum"),
         full_name: Yup.string().required("Full_name is required"),
+        useremail: Yup.string().email(),
         conf_password: Yup.string().required("Confirm password is required"),
         phoneNo: Yup.string().required("PhoneNo is required"),
         address: Yup.string().required("Address is required"),
@@ -39,19 +37,28 @@ const Register = () => {
     };
 
     async function onSubmit(values) {
+        setLoading(true);
         try {
             setLoading(true);
             setError(null);
             const request = {
-
+                username: values.username,
+                fullName: values.full_name,
+                email: values.useremail,
+                password: values.userpassword,
+                phoneNo: values.phoneNo,
+                address: values.address,
             }
-            console.log("Register", request);
+            await authAPI.register(request);
+
+            navigate("/");
         } catch (error) {
             console.log("Register", error);
             setError(error.response.data.error);
         } finally {
             setLoading(false);
         }
+
         navigate("/");
     }
 
@@ -61,7 +68,7 @@ const Register = () => {
                 <Formik
                     enableReinitialize
                     initialValues={initialValues}
-                    // validationSchema={validationSchema}
+                    validationSchema={validationSchema}
                     onSubmit={onSubmit}
                 >
                     {({ errors, touched, isSubmitting, setFieldValue }) => {
@@ -111,11 +118,11 @@ const Register = () => {
                                                                     : "")
                                                             }
                                                         />
-                                                        {/* <ErrorMessage
-                                                        name={item.fieldName}
-                                                        component="div"
-                                                        className="invalid-feedback"
-                                                    /> */}
+                                                        <ErrorMessage
+                                                            name={item.fieldName}
+                                                            component="div"
+                                                            className="invalid-feedback"
+                                                        />
                                                     </div>);
                                                 })}
 

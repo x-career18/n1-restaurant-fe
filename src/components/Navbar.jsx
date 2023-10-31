@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import Menu from "./Menu";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { customer } from "../modelUI/NavbarLink";
 import AuthContext from "../contexts/AuthContext/AuthContext";
 import { Dropdown } from "antd";
@@ -16,25 +16,28 @@ const Navbar = () => {
     {
       key: '1',
       label: (
-        <div>
-          <FaRegUser className="text-muted ms-2" />
-          <Link to="/profile" className="text-muted ms-2">
-            Profile
-          </Link>
-        </div>)
+        <NavLink
+          to={"/profile"}
+          className="nav-link text-muted ms-2"
+        >
+          <FaRegUser className="text-muted ms-2" style={{ marginRight: 10 }} />
+          Profile
+        </NavLink>)
     },
     {
       key: '2',
       label: (
-        <div>
-          <FaPowerOff className="text-muted ms-2 text-danger" />
-          <button
-            onClick={() => { handleLogout() }}
-            className="text-muted ms-2 btn btn-danger"
-          >
-            Logout
-          </button>
-        </div>
+        <NavLink
+          to={"/"}
+          onClick={() => {
+            handleLogout();
+          }}
+          className="nav-link text-muted ms-2"
+        >
+          <FaPowerOff className="text-danger ms-2" style={{ marginRight: 10 }} />
+          Logout
+        </NavLink>
+
       ),
     },
   ];
@@ -96,7 +99,15 @@ const Navbar = () => {
                   items,
                 }} placement="bottomRight">
                   <NavLink className="nav-link">
-                    User
+                    {auth.user.avata ? <img src={auth.user.avata} alt={auth.user.avata} width={20} height={20}
+                      style={{
+                        marginRight: 10
+                      }} /> : <img src={logo} alt={logo} width={20} height={20}
+                        style={{
+                          marginRight: 10
+                        }} />}
+                    {auth.user.fullName}
+                    <FaChevronDown className="text-muted ms-2" />
                   </NavLink>
                 </Dropdown>
               }
