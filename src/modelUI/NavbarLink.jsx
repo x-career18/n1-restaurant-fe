@@ -103,6 +103,10 @@ const staff = {
             text: "Check In"
         },
         {
+            path: "/open-table",
+            text: "Open"
+        },
+        {
             path: "/payment",
             text: "Payment"
         },

@@ -31,6 +31,8 @@ const FoodOrder = ({ isModal = false }) => {
     totalPrice += foodOrder[index].price * foodOrder[index].count;
   }
 
+  console.log(foodOrder)
+
   return (
     <div className="my-layout">
       <div className="my-header">

@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { notification } from "antd";
 import MenuModal from '../modals/MenuModal';
-import tableAPI from '../apis/tableAPI';
 import AuthContext from '../contexts/AuthContext/AuthContext';
-import createTable from '../models/Table';
 import reservationAPI from '../apis/reservationAPI';
 import createReservation from '../models/Reservation';
 import { pasreStringtoData } from '../utils/DateUtil';
+import AppContext from '../contexts/AppContext/AppContext';
 
 const Order = () => {
     const [mode, contextHolder] = notification.useNotification(); // success info warning error
     const { auth } = useContext(AuthContext);
+    const { foodOrder, setFoodOrder } = useContext(AppContext);
     const [modalShow, setModalShow] = useState(false);
     const [selectTable, setSelectTable] = useState(null);
     const [tableActiveList, settableActiveList] = useState([]);
@@ -52,6 +52,7 @@ const Order = () => {
             );
             return;
         }
+        setFoodOrder(table.order);
         setSelectTable(table.tableId.toString());
         setModalShow(true);
     };
@@ -87,7 +88,7 @@ const Order = () => {
                                     onClick={() => handleChooseTable(item)}
                                 >
                                     <h3>
-                                        Bàn đặt: {item.tableId.toString()}
+                                        Bàn số: {item.tableId.toString()}
                                     </h3>
                                     <div className='row mx-0 justify-content-start'>
                                         Tên: {item.fullname}

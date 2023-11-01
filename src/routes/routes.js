@@ -10,6 +10,7 @@ import Register from "../pages/auth/Register";
 import Food from "../pages/food/Food";
 import Order from "../pages/Order";
 import Manage from "../pages/manages/Manage";
+import OpenTable from "../pages/staff/OpenTable";
 
 const routes = [
     {
@@ -76,6 +77,12 @@ const routes = [
     {
         path: "/check-in",
         component: <CheckIn />,
+        isPrivate: true,
+        isAdmin: false
+    },
+    {
+        path: "/open-table",
+        component: <OpenTable />,
         isPrivate: true,
         isAdmin: false
     },

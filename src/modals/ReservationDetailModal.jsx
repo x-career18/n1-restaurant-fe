@@ -54,7 +54,7 @@ const ReservationDetailModal = ({ show, onHide, reservation, openTable }) => {
                     openTable(reservation?.tableId);
                     onHide();
                 }
-                }>Mở bàn</Button>
+                }>Check In</Button>
             </Modal.Footer>
         </Modal>
     )
