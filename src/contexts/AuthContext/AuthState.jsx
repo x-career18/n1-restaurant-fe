@@ -9,20 +9,23 @@ const AuthState = ({ children }) => {
     isAuthenticated: false,
     user: {},
   });
-  const [modeTab, setModeTab] = useState({});
+  const [modeTab, setModeTab] = useState(customer);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const response = await authAPI.authInfo();
       const data = response.data;
-      setAuth({
-        isAuthenticated: true,
-        user: data.data,
-      });
-      navigateByRole(data.data.role);
+      if (data) {
+        setAuth({
+          isAuthenticated: true,
+          user: data.data,
+        });
+        navigateByRole(data.data.role);
+      }
     } catch (error) {
       console.log(error);
+      handleLogout();
     }
   };
 
