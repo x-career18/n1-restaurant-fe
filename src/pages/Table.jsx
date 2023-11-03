@@ -25,7 +25,7 @@ const borderSelect = {
 
 // Hiển thị sơ đồ bàn của nhà hàng được chọn
 const Table = () => {
-  const { restaurants } = useContext(AppContext);
+  const { restaurants, setFoodOrder } = useContext(AppContext);
   const { getAllTableByRestaurant, tableMap, seTableMap } = useContext(TableContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [mode, contextHolder] = notification.useNotification(); // success info warning error
@@ -46,7 +46,7 @@ const Table = () => {
 
     // Lấy toàn bộ table của nhà hàng, tiến hành hiển thị danh sách lọc
     getAllTableByRestaurantID(restaurantsId);
-
+    setFoodOrder([]);
   }, [restaurants]);
 
   const getAllTableByRestaurantID = async (restaurantsId) => {

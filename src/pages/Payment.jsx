@@ -1,69 +1,166 @@
-import React from 'react'
-import Main from '../components/Main'
-import { useNavigate } from 'react-router-dom';
+import { notification } from 'antd';
+import React, { useContext, useEffect, useState } from 'react'
+import AuthContext from '../contexts/AuthContext/AuthContext';
+import AppContext from '../contexts/AppContext/AppContext';
+import reservationAPI from '../apis/reservationAPI';
+import createReservation from '../models/Reservation';
+import orderAPI from '../apis/orderAPI';
+import { pasreStringtoData } from '../utils/DateUtil';
+import PaymentModal from '../modals/PaymentModal';
 
 const Payment = () => {
-    const navigate = useNavigate();
-    let foodList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const [mode, contextHolder] = notification.useNotification(); // success info warning error
+    const { auth } = useContext(AuthContext);
+    const { foodOrder, setFoodOrder } = useContext(AppContext);
+    const [modalShow, setModalShow] = useState(false);
+    const [selectTable, setSelectTable] = useState(null);
+    const [tableActiveList, settableActiveList] = useState([]);
 
+    useEffect(() => {
+        getAllReservationByRestaurantID();
+    }, []);
 
-    const handleSuccess = () => {
-        navigate("/");
+    const getAllReservationByRestaurantID = async () => {
+        try {
+            const response = await reservationAPI.getAllByRestaurantId(auth.user.restaurantId, 3);
+            if (response.data.success) {
+                const tableList = response.data.data;
+                let tables = [];
+                for (let index = 0; index < tableList.length; index++) {
+                    const item = createReservation(tableList[index]);
+                    tables.push(item);
+                }
+                settableActiveList(tables);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
     }
 
+    const openNotificationWithIcon = (type, message) => {
+        mode[type]({
+            message: "Thông báo",
+            description: message,
+        });
+    };
+
+    const handleChooseTable = async (table) => {
+        // Kiểm tra trạng thái bàn
+        if (table.status !== 3) {
+            openNotificationWithIcon(
+                "warning",
+                "Bạn chỉ được phép chọn bàn đang mở.!"
+            );
+            return;
+        }
+
+        const orderRes = await getOrderByReservation(table._id);
+        if (orderRes) {
+            setFoodOrder(orderRes.order);
+        } else {
+            setFoodOrder(table.order);
+        }
+
+        setSelectTable(table);
+        setModalShow(true);
+    };
+
+    const handlepayment = async () => {
+        try {
+            const orderRes = await getOrderByReservation(selectTable._id);
+            if (!orderRes) {
+                await orderAPI.create({
+                    "reservationId": selectTable._id,
+                    "userId": auth.user._id,
+                    "order": foodOrder
+                });
+
+            } else {
+                await orderAPI.update({
+                    "id": orderRes._id,
+                    "order": foodOrder,
+                    "status": orderRes.status,
+                });
+            }
+
+            openNotificationWithIcon(
+                "info",
+                "Thanh toán thành công.!"
+            );
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
+    const getOrderByReservation = async (reservationId) => {
+        try {
+            const response = await orderAPI.getById(reservationId);
+            if (response.data.success) {
+                const orderList = response.data.data;
+                return orderList;
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+        return null;
+    };
+
     return (
-        <Main>
-            <div className='container h-100'>
-                {/* Hiển thị hóa đơn được trích xuất */}
-                <h1>
-                    Nội dung hóa đơn
-                </h1>
-                {
-                    foodList.map((item, index) => {
-                        const title = "Món ăn số " + item;
-                        return <FormShowValue title={title} value="0" />
-                    })
-                }
-                <hr />
-                {/* Nhóm thông tin cần xử lý */}
-                <div className='row justify-content-end'>
-                    <div className='col-5 align-self-end'>
-                        {/* Giá tạm tính = Tổng tiền hóa đơn */}
-                        <FormShowValue title="Tổng số tiền" value="0" />
-                        {/* Giảm giá */}
-                        <FormShowValue title="Giảm giá" value="0" />
-                        {/* Hình thức thanh toán */}
-                        <FormShowValue title="Tiền mặt" value="0" />
-                        <FormShowValue title="Chuyển khoản" value="0" />
-                        {/* In hóa đơn */}
-                        <div className='row justify-content-end mt-5'>
-                            <button type="button" className="bg-my-primary text-center text-white fs-3 p-2 rounded-1 border-0 w-50"
-                                onClick={handleSuccess}>
-                                Thanh toán
-                            </button>
-                        </div>
-                    </div>
+        <>
+            {contextHolder}
+            <div className="container">
+                <div
+                    className="mt-2 row align-items-center"
+                    style={{
+                        height: 60,
+                    }}
+                >
+                    <h2 className="col px-4">Mời chọn bàn để thanh toán</h2>
                 </div>
+                <div className="row row-cols-3 row-cols-lg-4">
+                    {tableActiveList.map((item, index) => {
+                        const styleDefault =
+                            "p-3 fs-4 border-0";
+                        const styleStatus =
+                            item.status === 1
+                                ? "color-free"
+                                : item.status === 0
+                                    ? "color-reservation"
+                                    : "color-active";
+                        return (
+                            <div key={index} className="col p-4 ">
+                                <button
+                                    type="button"
+                                    className={`${styleDefault} ${styleStatus}`}
+                                    onClick={() => handleChooseTable(item)}
+                                >
+                                    <h3>
+                                        Bàn số: {item.tableId.toString()}
+                                    </h3>
+                                    <div className='row mx-0 justify-content-start'>
+                                        Tên: {item.fullname}
+                                    </div>
+                                    <div className='row mx-0 justify-content-start'>
+                                        SĐT: {item.phoneNo}
+                                    </div>
+                                    <div className='row mx-0 justify-content-start'>
+                                        CheckIn: {pasreStringtoData(item.updatedAt)}
+                                    </div>
+                                </button>
+                            </div>
+                        );
 
+                    })}
+                </div>
             </div>
-        </Main>
-    )
-}
-
-const FormShowValue = ({ title, value }) => {
-    return (
-        <div className='row'>
-            <div className='col-7 text-start'>
-                <h2>
-                    {title}
-                </h2>
-            </div>
-            <div className='col text-end'>
-                <h2>
-                    {value}
-                </h2>
-            </div>
-        </div>);
+            <PaymentModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                tableName={"Bàn số " + selectTable?.tableId.toString()}
+                payment={() => { }}
+            />
+        </>
+    );
 }
 
 export default Payment;

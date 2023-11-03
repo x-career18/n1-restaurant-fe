@@ -8,7 +8,7 @@ const showOrder = {
     "item": "Tên món",
     "quantity": "Số lượng",
     "discount": "Giảm giá",
-    "total": "Tổng tiền"
+    "costPerUnit": "Giá"
 }
 
 const ReservationDetailModal = ({ show, onHide, reservation, openTable }) => {

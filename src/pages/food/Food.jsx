@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FOOD } from '../../utils/LoadImage';
-import { Button, Dropdown, Space } from 'antd';
+import { Button, Dropdown, Space, notification } from 'antd';
 import { FaBowlFood, FaAngleDown } from "react-icons/fa6";
 import FoodOrder from './FoodOrder';
 import AppContext from '../../contexts/AppContext/AppContext';
@@ -34,6 +34,7 @@ const Food = ({ showDesc = true, isModal = false }) => {
     const [pageNo, setPageNo] = useState(1);
     const [countPageTotal, setCountPageTotal] = useState(0);
     const [showMenu, setShowMenu] = useState([]);
+    const [mode, contextHolder] = notification.useNotification();
 
     // Load lần đầu
     useEffect(() => {
@@ -76,9 +77,20 @@ const Food = ({ showDesc = true, isModal = false }) => {
     };
 
     const handleOnClickFoodItem = (item) => {
-        if (foodOrder.find((e) => e.foodCode == item.foodCode)) return;
+        if (foodOrder.find((e) => e.item == item.foodName)) {
+            openNotificationWithIcon(
+                "warning",
+                `Món ăn đã có trong thực đơn.!`
+            );
+            return;
+        }
         item["count"] = 1;
-        setFoodOrder([...foodOrder, item]);
+        setFoodOrder([...foodOrder, {
+            "item": item.foodName,
+            "quantity": item.count,
+            "discount": item.discount,
+            "costPerUnit": item.price
+        }]);
     }
 
     let items = [];
@@ -91,6 +103,12 @@ const Food = ({ showDesc = true, isModal = false }) => {
             disabled: false,
         });
     });
+    const openNotificationWithIcon = (type, message) => {
+        mode[type]({
+            message: "Thông báo",
+            description: message,
+        });
+    };
 
     const menuProps = {
         items,
@@ -102,6 +120,7 @@ const Food = ({ showDesc = true, isModal = false }) => {
 
     return (
         <div className="row mx-0 h-100">
+            {contextHolder}
             {/* Phần trái */}
             <div className="col h-100 position-relative px-0">
                 <div className='position-absolute top-0 start-0 p-4'>

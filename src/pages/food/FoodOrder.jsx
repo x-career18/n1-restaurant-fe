@@ -28,7 +28,7 @@ const FoodOrder = ({ isModal = false }) => {
 
   let totalPrice = 0;
   for (let index = 0; index < foodOrder.length; index++) {
-    totalPrice += foodOrder[index].price * foodOrder[index].count;
+    totalPrice += foodOrder[index].costPerUnit * foodOrder[index].quantity;
   }
 
   console.log(foodOrder)

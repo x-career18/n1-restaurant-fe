@@ -3,9 +3,11 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { InputNumber } from "antd";
 
 const FoodOrderItem = ({ item, index, handeCount, handeRemove }) => {
+
   const onChange = (value) => {
-    item['count'] = value;
+    item['quantity'] = value;
     handeCount(index, item);
+    console.log("onChange", value)
   };
 
   const onRemove = () => {
@@ -16,8 +18,8 @@ const FoodOrderItem = ({ item, index, handeCount, handeRemove }) => {
     <div key={index} className="row mx-0">
       {/* Tên món ăn */}
       <div className="col d-flex align-items-center flex-column">
-        <div className="fs-5 fw-bold">{item.foodName}</div>
-        <span className="">${item.price}</span>
+        <div className="fs-5 fw-bold">{item.item}</div>
+        <span className="">$ {item.costPerUnit}</span>
       </div>
       {/* Số lượng đặt */}
       <div className="col p-0 d-flex justify-content-center align-items-center">
@@ -28,6 +30,7 @@ const FoodOrderItem = ({ item, index, handeCount, handeRemove }) => {
           max={10}
           defaultValue={1}
           onChange={onChange}
+          value={item.quantity}
         />
       </div>
       {/* Nút xóa */}

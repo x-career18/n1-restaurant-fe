@@ -12,10 +12,9 @@ import reservationAPI from "../apis/reservationAPI";
 import { param } from "../contexts/QueryParam";
 import { getIdByRestaurantName } from "../utils/TableUtil";
 import tableAPI from "../apis/tableAPI";
-import TableContext from "../contexts/TableContext/TableContext";
 
 const Reservation = () => {
-  const { restaurants, reservation, setReservation, selectList, setSelectList, foodOrder, setFoodOrder } =
+  const { restaurants, reservation, foodOrder, setFoodOrder } =
     useContext(AppContext);
   const [mode, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
@@ -312,6 +311,7 @@ const Reservation = () => {
         onHide={() => setModalShow(false)}
         tableName={reservation.restaurantId}
         isCanel={() => setFoodOrder([])}
+        order={() => { }}
       />
     </div>
 

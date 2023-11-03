@@ -6,6 +6,7 @@ import reservationAPI from '../apis/reservationAPI';
 import createReservation from '../models/Reservation';
 import { pasreStringtoData } from '../utils/DateUtil';
 import AppContext from '../contexts/AppContext/AppContext';
+import orderAPI from '../apis/orderAPI';
 
 const Order = () => {
     const [mode, contextHolder] = notification.useNotification(); // success info warning error
@@ -43,7 +44,7 @@ const Order = () => {
         });
     };
 
-    const handleChooseTable = (table) => {
+    const handleChooseTable = async (table) => {
         // Kiểm tra trạng thái bàn
         if (table.status !== 3) {
             openNotificationWithIcon(
@@ -52,11 +53,57 @@ const Order = () => {
             );
             return;
         }
-        setFoodOrder(table.order);
-        setSelectTable(table.tableId.toString());
+
+        const orderRes = await getOrderByReservation(table._id);
+        if (orderRes) {
+            setFoodOrder(orderRes.order);
+        } else {
+            setFoodOrder(table.order);
+        }
+
+        setSelectTable(table);
         setModalShow(true);
     };
 
+    const handleOrder = async () => {
+        try {
+            const orderRes = await getOrderByReservation(selectTable._id);
+            if (!orderRes) {
+                await orderAPI.create({
+                    "reservationId": selectTable._id,
+                    "userId": auth.user._id,
+                    "order": foodOrder
+                });
+
+            } else {
+                await orderAPI.update({
+                    "id": orderRes._id,
+                    "order": foodOrder,
+                    "status": orderRes.status,
+                });
+            }
+
+            openNotificationWithIcon(
+                "info",
+                "Đặt món thành công.!"
+            );
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
+    const getOrderByReservation = async (reservationId) => {
+        try {
+            const response = await orderAPI.getById(reservationId);
+            if (response.data.success) {
+                const orderList = response.data.data;
+                return orderList;
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+        return null;
+    };
 
     return (
         <>
@@ -109,7 +156,8 @@ const Order = () => {
             <MenuModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                tableName={"Bàn số " + selectTable}
+                tableName={"Bàn số " + selectTable?.tableId.toString()}
+                order={handleOrder}
             />
         </>
     );
