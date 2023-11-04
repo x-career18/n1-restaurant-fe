@@ -77,13 +77,6 @@ const Food = ({ showDesc = true, isModal = false }) => {
     };
 
     const handleOnClickFoodItem = (item) => {
-        if (foodOrder.find((e) => e.item == item.foodName)) {
-            openNotificationWithIcon(
-                "warning",
-                `Món ăn đã có trong thực đơn.!`
-            );
-            return;
-        }
         item["count"] = 1;
         setFoodOrder([...foodOrder, {
             "item": item.foodName,

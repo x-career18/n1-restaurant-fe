@@ -72,7 +72,7 @@ const CardRestaurant = ({ index, item, onClickOrder, onClickMenu }) => {
                         fontSize: 14
                     }}
                     onClick={() => {
-                        navigate(`/menu`);
+                        navigate("/combo-menu")
                     }}
                 >
                     Xem thực đơn

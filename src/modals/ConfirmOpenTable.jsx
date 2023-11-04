@@ -26,7 +26,7 @@ const ConfirmOpenTable = ({ show, onHide, openTable, table }) => {
             <Modal.Footer>
                 <Button onClick={handleCanel}>Close</Button>
                 <Button onClick={() => {
-                    openTable([table?.tableId]);
+                    openTable();
                     onHide();
                 }}>Mở bàn</Button>
             </Modal.Footer>

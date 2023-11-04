@@ -144,7 +144,7 @@ const Payment = () => {
                                         SĐT: {item.phoneNo}
                                     </div>
                                     <div className='row mx-0 justify-content-start'>
-                                        CheckIn: {pasreStringtoData(item.updatedAt)}
+                                        CheckIn: {pasreStringtoData(item.checkinTime)}
                                     </div>
                                 </button>
                             </div>
@@ -158,6 +158,7 @@ const Payment = () => {
                 onHide={() => setModalShow(false)}
                 tableName={"Bàn số " + selectTable?.tableId.toString()}
                 payment={() => { }}
+                isCanel={() => {}}
             />
         </>
     );
