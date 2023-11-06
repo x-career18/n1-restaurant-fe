@@ -7,6 +7,7 @@ import createReservation from '../models/Reservation';
 import orderAPI from '../apis/orderAPI';
 import { pasreStringtoData } from '../utils/DateUtil';
 import PaymentModal from '../modals/PaymentModal';
+import paymentAPI from '../apis/paymentAPI';
 
 const Payment = () => {
     const [mode, contextHolder] = notification.useNotification(); // success info warning error
@@ -65,30 +66,26 @@ const Payment = () => {
         setModalShow(true);
     };
 
-    const handlepayment = async () => {
+    const handlePayment = async (payment) => {
         try {
-            const orderRes = await getOrderByReservation(selectTable._id);
-            if (!orderRes) {
-                await orderAPI.create({
-                    "reservationId": selectTable._id,
-                    "userId": auth.user._id,
-                    "order": foodOrder
-                });
-
+            const response = await paymentAPI.create(payment);
+            if (response.data.success) {
+                openNotificationWithIcon(
+                    "info",
+                    "Thanh toán thành công.!"
+                );
             } else {
-                await orderAPI.update({
-                    "id": orderRes._id,
-                    "order": foodOrder,
-                    "status": orderRes.status,
-                });
+                openNotificationWithIcon(
+                    "info",
+                    "Thanh toán thất bại.!"
+                );
             }
-
-            openNotificationWithIcon(
-                "info",
-                "Thanh toán thành công.!"
-            );
         } catch (error) {
             console.log("error", error);
+            openNotificationWithIcon(
+                "info",
+                "Hệ thống hiện không hoạt động.!"
+            );
         }
     };
 
@@ -157,7 +154,7 @@ const Payment = () => {
                 show={modalShow}
                 onHide={() => setModalShow(false)}
                 tableName={"Bàn số " + selectTable?.tableId.toString()}
-                payment={() => { }}
+                payment={() => handlePayment}
             />
         </>
     );
