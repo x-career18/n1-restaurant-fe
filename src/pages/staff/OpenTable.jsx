@@ -4,19 +4,22 @@ import createTable from "../../models/Table";
 import tableAPI from "../../apis/tableAPI";
 import AuthContext from "../../contexts/AuthContext/AuthContext";
 import ConfirmOpenTable from "../../modals/ConfirmOpenTable";
+import dayjs from "dayjs";
+import reservationAPI from "../../apis/reservationAPI";
 
 const colorStatus = {
-  "1": "color-free",
-  "0": "color-reservation",
-  "2": "color-active",
+  1: "color-free",
+  0: "color-reservation",
+  2: "color-active",
 };
 
-const styleDefault = "ratio ratio-1x1 d-flex flex-column align-items-center justify-content-center fs-4";
+const styleDefault =
+  "ratio ratio-1x1 d-flex flex-column align-items-center justify-content-center fs-4";
 
 const borderSelect = {
   true: "border-2",
-  false: "border-0"
-}
+  false: "border-0",
+};
 
 // Hiển thị sơ đồ bàn của nhà hàng được chọn
 const OpenTable = () => {
@@ -33,7 +36,10 @@ const OpenTable = () => {
 
   const getTableFreeByRestaurantID = async () => {
     try {
-      const response = await tableAPI.getAllByRestaurantIdAndStatus(auth.user.restaurantId, 1);
+      const response = await tableAPI.getAllByRestaurantIdAndStatus(
+        auth.user.restaurantId,
+        1
+      );
       if (response.data.success) {
         const tableList = response.data.data;
         let tables = [];
@@ -53,7 +59,7 @@ const OpenTable = () => {
     } catch (error) {
       console.log("error", error);
     }
-  }
+  };
 
   const handleChooseTable = (table) => {
     // Kiểm tra trạng thái bàn
@@ -75,12 +81,45 @@ const OpenTable = () => {
     setSelectTable(newSelectTable);
   };
 
-  const handleOpenTable = async (tableId) => {
-    await tableAPI.openTable({ tableId });
-    openNotificationWithIcon(
-      "info",
-      `Bàn (${tableId.toString()}) đã mở.!`
-    );
+  const handleOpenTable = async () => {
+    if (selectTable.length == 0) {
+      openNotificationWithIcon("warning", `Bạn phải chọn ít nhất 1 bàn.!`);
+      return;
+    }
+
+    let tableId = [];
+    for (let index = 0; index < selectTable.length; index++) {
+      const element = selectTable[index];
+      tableId.push(element.tableId);
+    }
+
+    const currentTime = dayjs();
+
+    // Tạo thông tin để gửi
+    const newReservation = {
+      fullname: auth.user.fullName,
+      phoneNo: 1,
+      restaurantId: auth.user.restaurantId,
+      tableId: tableId,
+      tableCount: tableId.length,
+      order: [],
+      checkinTime: currentTime,
+      expiredTime: currentTime,
+    };
+    const response = await reservationAPI.create(newReservation);
+    // Check response
+    if (response.data.success) {
+      // Thông báo thành công
+      openNotificationWithIcon("info", `Bàn (${tableId.toString()}) đã mở.!`);
+      await reservationAPI.checkInReservation(response.data.data._id);
+    } else {
+      // Thông báo thất bại
+      openNotificationWithIcon(
+        "error",
+        "Mở bàn không thành công. " + response.data.message
+      );
+    }
+
     getTableFreeByRestaurantID();
   };
 
@@ -101,14 +140,21 @@ const OpenTable = () => {
             height: 60,
           }}
         >
-          <h2 className="col px-4">{selectTable.length == 0 ? "Chọn bàn để mở" : "Bàn đang chọn: " + selectTable.map((item) => item.tableName).toString()}</h2>
+          <h2 className="col px-4">
+            {selectTable.length == 0
+              ? "Chọn bàn để mở"
+              : "Bàn đang chọn: " +
+                selectTable.map((item) => item.tableName).toString()}
+          </h2>
           <button
             className="rounded-1 border-1 fs-4 col-2 text-my-color-navbar"
             style={{
               backgroundColor: "#FCDAB4",
-              borderColor: "#F6921E"
+              borderColor: "#F6921E",
             }}
-            onClick={() => {setModalShow(true)}}
+            onClick={() => {
+              setModalShow(true);
+            }}
           >
             Mở bàn
           </button>
@@ -119,7 +165,9 @@ const OpenTable = () => {
               <div key={index} className="col pb-4">
                 <button
                   type="button"
-                  className={`${styleDefault} ${colorStatus[item.status]} ${borderSelect[item.selected]}`}
+                  className={`${styleDefault} ${colorStatus[item.status]} ${
+                    borderSelect[item.selected]
+                  }`}
                   onClick={() => handleChooseTable(item)}
                 >
                   <img

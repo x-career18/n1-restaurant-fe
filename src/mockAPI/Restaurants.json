@@ -20,8 +20,8 @@
         "closingTime": "23:30",
         "description": "Ẩm thực tại Hồ Chí Minh nổi bật với đa dạng các món ngon, đưa cuộc nhậu lên một tầm cao mới. Trong không gian hiện đại với phong cách decor camping độc đáo, âm nhạc bắt tai, Hồ Chí Minh hứa hẹn sẽ mang đến những  trải nghiệm ăn chơi tiệc tùng đỉnh cao có 1-0-2.",
         "images": [
-            "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Banner/16/banner1683727192123.jpg",
             "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Banner/11/banner1672297727938.jpg",
+            "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Banner/16/banner1683727192123.jpg",
             "https://www.lauductroc.com/upload/lau-hai-san-set-3.jpg"
         ]
     },
@@ -33,9 +33,9 @@
         "closingTime": "23:30",
         "description": "Ẩm thực tại Đà Nẵng nổi bật với đa dạng các món ngon, đưa cuộc nhậu lên một tầm cao mới. Trong không gian hiện đại với phong cách decor camping độc đáo, âm nhạc bắt tai, Đà Nẵng hứa hẹn sẽ mang đến những  trải nghiệm ăn chơi tiệc tùng đỉnh cao có 1-0-2.",
         "images": [
+            "https://www.lauductroc.com/upload/lau-hai-san-set-3.jpg",
             "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Banner/16/banner1683727192123.jpg",
-            "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Banner/11/banner1672297727938.jpg",
-            "https://www.lauductroc.com/upload/lau-hai-san-set-3.jpg"
+            "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Banner/11/banner1672297727938.jpg"
         ]
     },
     {

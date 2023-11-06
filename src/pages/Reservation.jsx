@@ -10,12 +10,16 @@ import MenuModal from "../modals/MenuModal";
 import FoodOrder from "./food/FoodOrder";
 import reservationAPI from "../apis/reservationAPI";
 import { param } from "../contexts/QueryParam";
-import { getIdByRestaurantName } from "../utils/TableUtil";
+import { getIdByRestaurantName, getIdByTableName } from "../utils/TableUtil";
 import tableAPI from "../apis/tableAPI";
+import TableContext from "../contexts/TableContext/TableContext";
+import createTable from "../models/Table";
 
 const Reservation = () => {
   const { restaurants, reservation, foodOrder, setFoodOrder } =
     useContext(AppContext);
+  const { getAllTableByRestaurant, seTableMap } =
+    useContext(TableContext);
   const [mode, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
@@ -24,6 +28,7 @@ const Reservation = () => {
 
   const restaurantName = searchParams.get(param.restaurants);
   const selectTable = searchParams.get(param.selectTable)?.split(",");
+  const restaurantsId = getIdByRestaurantName(restaurants, searchParams.get(param.restaurants));
 
   const initialValues = {
     fullName: "",
@@ -57,7 +62,9 @@ const Reservation = () => {
     let isTableNotFree = [];
     let listTableId = [];
     for (let index = 0; index < listTableName.length; index++) {
-      const found = filterTableFree.find((element) => element.name == listTableName[index]);
+      const found = filterTableFree.find(
+        (element) => element.name == listTableName[index]
+      );
       if (!found) {
         isTableNotFree.push(listTableName[index]);
         break;
@@ -76,38 +83,34 @@ const Reservation = () => {
     // Lấy thông tin của foodOrder
     let foodOrderList = [];
     for (let index = 0; index < foodOrder.length; index++) {
-      const {
-        foodName,
-        count,
-        price,
-        discount,
-      } = foodOrder[index];
+      const { item, quantity, costPerUnit, discount } = foodOrder[index];
 
       foodOrderList.push({
-        "item": foodName,
-        "quantity": count,
-        "discount": discount,
-        "total": price * count
+        item,
+        quantity,
+        costPerUnit,
+        discount,
       });
     }
 
     // Tính expiredTime từ checkInTime
-    const expiredTime = checkInTime.add(30, 'minutes');
+    const expiredTime = checkInTime.add(30, "minutes");
 
     // Tạo thông tin để gửi
     const newReservation = {
       fullname: fields.fullName,
       phoneNo: fields.phone,
       restaurantId: restaurantId,
-      tableId: listTableName,
+      tableId: listTableId,
       tableCount: listTableName.length,
       order: foodOrderList,
       checkinTime: checkInTime.$d,
       expiredTime: expiredTime.$d,
-    }
+    };
 
     await createReservation(newReservation);
-
+    await getAllTableByRestaurantID();
+    
     searchParams.delete(param.selectTable);
     setSearchParams(searchParams);
     resetForm();
@@ -124,11 +127,7 @@ const Reservation = () => {
     // Check response
     if (response.data.success) {
       // Thông báo thành công
-      openNotificationWithIcon(
-        "success",
-        "Bạn đã đặt bàn thành công.!"
-      );
-
+      openNotificationWithIcon("success", "Bạn đã đặt bàn thành công.!");
     } else {
       // Thông báo thất bại
       openNotificationWithIcon(
@@ -136,8 +135,26 @@ const Reservation = () => {
         "Đặt bàn không thành công. " + response.data.message
       );
     }
+
     setLoading(false);
-  }
+  };
+
+  const getAllTableByRestaurantID = async () => {
+    const tableList = await getAllTableByRestaurant(restaurantsId);
+    let tables = [];
+    for (let index = 0; index < tableList.length; index++) {
+      const item = createTable({
+        tableId: tableList[index]._id,
+        tableName: tableList[index].name,
+        image: "/table/" + tableList[index].images,
+        status: tableList[index].status,
+        restaurantId: tableList[index].restaurantId,
+      });
+      item["selected"] = false;
+      tables.push(item);
+    }
+    seTableMap(tables);
+  };
 
   const checkTableFree = async (restaurantId) => {
     try {
@@ -147,21 +164,14 @@ const Reservation = () => {
         return response.data.data;
       }
     } catch (error) {
-      openNotificationWithIcon(
-        "error",
-        "Hệ thống hiện không hoạt động."
-      );
+      openNotificationWithIcon("error", "Hệ thống hiện không hoạt động.");
       return null;
     }
-  }
-
+  };
 
   const checkSelectTable = (selectTable) => {
     if (selectTable == null || selectTable == "") {
-      openNotificationWithIcon(
-        "warning",
-        "Bạn nên chọn ít nhất 1 bàn.!"
-      );
+      openNotificationWithIcon("warning", "Bạn nên chọn ít nhất 1 bàn.!");
       setLoading(false);
       return false;
     }
@@ -170,10 +180,7 @@ const Reservation = () => {
 
   const checkTime = (time) => {
     if (time == null || time == "") {
-      openNotificationWithIcon(
-        "warning",
-        "Bạn nên chọn giờ đặt bàn.!"
-      );
+      openNotificationWithIcon("warning", "Bạn nên chọn giờ đặt bàn.!");
       setLoading(false);
       return false;
     }
@@ -220,7 +227,10 @@ const Reservation = () => {
             <label className="col px-0 fs-5 ">
               {capitalizeFirstLetter("Bàn số")}
             </label>
-            <label className="col px-0 fs-5 "> {searchParams.get(param.selectTable) ?? ""}</label>
+            <label className="col px-0 fs-5 ">
+              {" "}
+              {searchParams.get(param.selectTable) ?? ""}
+            </label>
           </div>
           <hr />
           <div className="fs-4 fw-bold">Thông tin liên hệ</div>
@@ -239,10 +249,12 @@ const Reservation = () => {
                         key={item.fieldName}
                         className="form-group row me-2  mt-2"
                         style={{
-                          height: 40
+                          height: 40,
                         }}
                       >
-                        <label className="col fs-5 ">{capitalizeFirstLetter(item.label)}</label>
+                        <label className="col fs-5 ">
+                          {capitalizeFirstLetter(item.label)}
+                        </label>
                         <Field
                           name={item.fieldName}
                           type={item.type ? item.type : "text"}
@@ -262,21 +274,24 @@ const Reservation = () => {
                     <label className="col fs-5 ">Thời gian đặt</label>
                     <DatePicker
                       className="col"
-                      size={'large'}
+                      size={"large"}
                       showTime
                       value={checkInTime}
                       onChange={onChange}
                       onOk={onOk}
                       placeholder={"Enter time"}
-                      status={errors.time ? "error" : ""} />
+                      status={errors.time ? "error" : ""}
+                    />
                   </div>
 
                   <div key={"food"} className="form-group row me-2 mt-2">
                     <label className="col fs-5 ">Thực đơn</label>
-                    {foodOrder?.length > 0 ? <FoodOrder isModal={true} />
-                      : <button
+                    {foodOrder?.length > 0 ? (
+                      <FoodOrder isModal={true} />
+                    ) : (
+                      <button
                         style={{
-                          height: 40
+                          height: 40,
                         }}
                         type="button"
                         className="grey col d-flex align-items-center justify-content-center border-0"
@@ -284,7 +299,7 @@ const Reservation = () => {
                       >
                         Chọn thực đơn
                       </button>
-                    }
+                    )}
                   </div>
 
                   <div className="form-group text-end m-3 ">
@@ -311,10 +326,9 @@ const Reservation = () => {
         onHide={() => setModalShow(false)}
         tableName={reservation.restaurantId}
         isCanel={() => setFoodOrder([])}
-        order={() => { }}
+        order={() => {}}
       />
     </div>
-
   );
 };
 
