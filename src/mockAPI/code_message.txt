@@ -1,0 +1,43 @@
+1. Message
+
+- Reservation (status):
+
+    + 0: Bàn đang được đặt
+
+    + 1: Thất bại
+
+    + 2: Thành công
+
+    + 3: Đã check in
+
+- Receipt (method):
+
+    + 0: chuyển khoản
+
+    + 1: tiền mặt
+
+- Table (status):
+
+    + 0: Bàn đang được đặt
+
+    + 1: Bàn trống
+
+    + 2: Bàn đang hoạt động
+
+- Menu Item (category):
+
+    + 0: món ăn    
+
+    + 1: đồ uống
+
+- User (status):
+
+	+ 1: Đang hoạt động
+
+	+ 2: Khóa
+
+- Order:
+
+	+ 1: Đang hoạt động
+
+	+ 2: Đã hoàn thành

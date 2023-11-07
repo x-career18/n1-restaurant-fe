@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import AppContext from '../contexts/AppContext/AppContext';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -14,11 +14,20 @@ const showOrder = {
 
 const PaymentModal = ({ show, onHide, isCanel, tableName, payment }) => {
     const { foodOrder, setFoodOrder } = useContext(AppContext);
+    const [cash, setCash] = useState(0);
 
     const handleCanel = () => {
         onHide();
         isCanel();
-    }
+        setCash(0);
+    };
+
+    const handleValue = (value) => {
+        if (value > totalOrder(foodOrder)) {
+            value = totalOrder(foodOrder);
+        }
+        setCash(value);
+    };
 
     return (
         <Modal
@@ -55,15 +64,18 @@ const PaymentModal = ({ show, onHide, isCanel, tableName, payment }) => {
                             </h5>
                         </div>
                     </div>
-                    {FormShowValue({ title: "Giảm giá" })}
-                    {FormShowValue({ title: "Thành tiền" })}
-                    {FormShowValue({ title: "Thanh toán" })}
+                    {/* {FormShowValue({ title: "Giảm giá" })} */}
+                    {/* {FormShowValue({ title: "Thành tiền" , value: totalOrder(foodOrder)})} */}
+                    {FormShowValue({ title: "Thanh toán", value: cash, onChange: handleValue })}
                     <div className='d-flex justify-content-end gap-3'>
                         <Button onClick={handleCanel}>Close</Button>
                         <Button onClick={() => {
-                            // cập nhật lại order
-                            payment();
+                            payment({
+                                method: "Cash",
+                                value: cash
+                            });
                             onHide();
+                            setCash(0);
                         }}>Thanh toán</Button>
                     </div>
                 </div>
@@ -106,7 +118,7 @@ const buildOrder = (order) => {
     </Table>
 }
 
-const FormShowValue = ({ title, value }) => {
+const FormShowValue = ({ title, value, onChange }) => {
     return (
         <div className='row'>
             <div className='col'>
@@ -115,7 +127,13 @@ const FormShowValue = ({ title, value }) => {
                 </h5>
             </div>
             <div className='col border-bottom'>
-                <Input className='text-end' placeholder="0" bordered={false} />
+                <Input
+                    className='text-end'
+                    placeholder="0"
+                    bordered={false}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                />
             </div>
         </div>);
 }

@@ -15,6 +15,7 @@ const Payment = () => {
     const { foodOrder, setFoodOrder } = useContext(AppContext);
     const [modalShow, setModalShow] = useState(false);
     const [selectTable, setSelectTable] = useState(null);
+    const [orderId, setOrderId] = useState(null);
     const [tableActiveList, settableActiveList] = useState([]);
 
     useEffect(() => {
@@ -58,6 +59,7 @@ const Payment = () => {
         const orderRes = await getOrderByReservation(table._id);
         if (orderRes) {
             setFoodOrder(orderRes.order);
+            setOrderId(orderRes._id);
         } else {
             setFoodOrder(table.order);
         }
@@ -67,13 +69,20 @@ const Payment = () => {
     };
 
     const handlePayment = async (payment) => {
+        console.log(payment)
         try {
-            const response = await paymentAPI.create(payment);
+            const response = await paymentAPI.create({
+                orderId: orderId,
+                userId: auth.user._id,
+                payment: payment
+            });
+            
             if (response.data.success) {
                 openNotificationWithIcon(
                     "info",
                     "Thanh toán thành công.!"
                 );
+                getAllReservationByRestaurantID();
             } else {
                 openNotificationWithIcon(
                     "info",
@@ -154,7 +163,7 @@ const Payment = () => {
                 show={modalShow}
                 onHide={() => setModalShow(false)}
                 tableName={"Bàn số " + selectTable?.tableId.toString()}
-                payment={() => handlePayment}
+                payment={(payment) => handlePayment(payment)}
                 isCanel={() => {}}
 
             />

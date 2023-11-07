@@ -7,7 +7,6 @@ const FoodOrderItem = ({ item, index, handeCount, handeRemove }) => {
   const onChange = (value) => {
     item['quantity'] = value;
     handeCount(index, item);
-    console.log("onChange", value)
   };
 
   const onRemove = () => {
