@@ -8,6 +8,7 @@ import orderAPI from '../apis/orderAPI';
 import { pasreStringtoData } from '../utils/DateUtil';
 import PaymentModal from '../modals/PaymentModal';
 import paymentAPI from '../apis/paymentAPI';
+import { isObjectEmpty } from '../utils/CheckEmpty';
 
 const Payment = () => {
     const [mode, contextHolder] = notification.useNotification(); // success info warning error
@@ -36,6 +37,19 @@ const Payment = () => {
             }
         } catch (error) {
             console.log("error", error);
+        }
+    }
+
+    const updateReservationById = async (model) => {
+        try {
+            const response = await reservationAPI.update(model);
+            if (response.data.success) {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.log("error", error);
+            return false;
         }
     }
 
@@ -68,15 +82,35 @@ const Payment = () => {
         setModalShow(true);
     };
 
-    const handlePayment = async (payment) => {
-        console.log(payment)
+    const handlePayment = async (info, payment) => {
         try {
+            // Cập nhật thông tin khách hàng
+            let updateInfoReservation = {}
+            if (info.fullname != "") {
+                updateInfoReservation["fullname"] = info.fullname;
+            }
+
+            if (info.phoneNo != "") {
+                updateInfoReservation["phoneNo"] = info.phoneNo;
+            }
+
+            if (!isObjectEmpty(updateInfoReservation)) {
+                const response = await updateReservationById(updateInfoReservation);
+                if (!response) {
+                    openNotificationWithIcon(
+                        "error",
+                        "Cập nhật thông tin không thành công.!"
+                    );
+                    return;
+                }
+            }
+
             const response = await paymentAPI.create({
                 orderId: orderId,
                 userId: auth.user._id,
                 payment: payment
             });
-            
+
             if (response.data.success) {
                 openNotificationWithIcon(
                     "info",
@@ -162,9 +196,9 @@ const Payment = () => {
             <PaymentModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                tableName={"Bàn số " + selectTable?.tableId.toString()}
+                table={selectTable}
                 payment={(payment) => handlePayment(payment)}
-                isCanel={() => {}}
+                isCanel={() => { }}
 
             />
         </>
