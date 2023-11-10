@@ -29,4 +29,6 @@ axiosInstance.interceptors.response.use(
   }
 )
 
+const GET = (endpoint,value) => axiosInstance.get(endpoint,value);
+
 export default axiosInstance;
