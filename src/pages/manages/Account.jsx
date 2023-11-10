@@ -1,27 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AccountModal from '../../modals/AccountModal';
 import Board from './Board';
 import { AccountBoard } from '../../modelUI/AccountBoard';
+import accountAPI from '../../apis/accountAPI';
 
 const Account = () => {
     const [modalShow, setModalShow] = useState(false);
-
+    const [listObj, setListObj] = useState([]);
     // Lấy danh sách user
     // Thêm user
     // Sửa user
     // Xóa user
 
-    let listObj = [];
-    for (let index = 0; index < 50; index++) {
-        listObj.push({
-            name: `Số hưởng số ${index} `,
-            address: "2",
-            openTime: "3",
-            closeTime: "4",
-            description: "5",
-            images: ["sdfklj"],
-        });
-    }
+    useEffect(() => {
+        async function getAll() {
+            try {
+                const response = await accountAPI.getAll();
+                if (response.data.success) {
+                    const accountList = response.data.data;
+                    setListObj(accountList);
+                }
+            } catch (error) {
+                console.log("error", error);
+            }
+        };
+        getAll();
+    }, []);
 
     const handleOnclick = () => {
         setModalShow(true);
