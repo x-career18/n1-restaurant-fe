@@ -1,27 +1,25 @@
 import React, { useState } from 'react'
 import AccountModal from '../../modals/AccountModal';
 import Board from './Board';
-import { AccountBoard } from '../../modelUI/AccountBoard';
+import { MenuBoard } from '../../modelUI/MenuBoard';
 
-const Account = () => {
+const Menu = () => {
     const [modalShow, setModalShow] = useState(false);
-
-    // Lấy danh sách user
-    // Thêm user
-    // Sửa user
-    // Xóa user
-
-    let listObj = [];
-    for (let index = 0; index < 50; index++) {
-        listObj.push({
-            name: `Số hưởng số ${index} `,
-            address: "2",
-            openTime: "3",
-            closeTime: "4",
-            description: "5",
-            images: ["sdfklj"],
-        });
-    }
+    const [listObj, setListObj] = useState([]);
+    // useEffect(() => {
+    //     async function getAll() {
+    //         try {
+    //             const response = await accountAPI.getAll();
+    //             if (response.data.success) {
+    //                 const accountList = response.data.data;
+    //                 setListObj(accountList);
+    //             }
+    //         } catch (error) {
+    //             console.log("error", error);
+    //         }
+    //     };
+    //     getAll();
+    // }, []);
 
     const handleOnclick = () => {
         setModalShow(true);
@@ -35,11 +33,11 @@ const Account = () => {
                     className="bg-my-primary text-center text-white fs-5 p-2 rounded-1 border-0"
                     onClick={handleOnclick}
                 >
-                    Đăng ký tài khoản
+                    Thêm món
                 </button>
             </div>
             <Board
-                tableHead={AccountBoard}
+                tableHead={MenuBoard}
                 listObj={listObj}
             />
             <AccountModal
@@ -51,4 +49,4 @@ const Account = () => {
     )
 }
 
-export default Account
+export default Menu

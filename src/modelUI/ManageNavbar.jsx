@@ -1,4 +1,5 @@
 import Account from "../pages/manages/Account";
+import Menu from "../pages/manages/Menu";
 
 const ManageNavbar = [
     {
@@ -7,7 +8,7 @@ const ManageNavbar = [
     },
     {
         name: "menu",
-        page: <Account/>,
+        page: <Menu/>,
     },
     {
         name: "restaurant",
