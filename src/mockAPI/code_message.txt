@@ -41,3 +41,9 @@
 	+ 1: Đang hoạt động
 
 	+ 2: Đã hoàn thành
+
+- User (role):
+
+	+ 1: owner (manage)
+
+	+ 2: staff

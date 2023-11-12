@@ -64,10 +64,6 @@ const customer = {
             path: "/login",
             text: "Login"
         },
-        {
-            path: "/register",
-            text: "Register"
-        },
     ]
 };
 
