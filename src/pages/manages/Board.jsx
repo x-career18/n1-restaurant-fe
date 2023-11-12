@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import { Button, Tooltip } from 'antd';
+import React, { useContext, useState } from 'react'
 import Table from 'react-bootstrap/Table';
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
+import AppContext from '../../contexts/AppContext/AppContext';
 
-const Board = ({ tableHead = [], listObj = [], isAction = true }) => {
+const Board = ({ tableHead = {}, listObj = [], isAction = true }) => {
+    const { restaurants } = useContext(AppContext);
     return (
         <Table className='mx-0' responsive striped bordered>
             <thead>
                 <tr>
                     <th>#</th>
-                    {tableHead.map((key, index) => (
+                    {Object.keys(tableHead).map((key, index) => (
                         <th key={index}>{key}</th>
                     ))}
                     {
@@ -23,9 +26,44 @@ const Board = ({ tableHead = [], listObj = [], isAction = true }) => {
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 {
-                                    tableHead.map((key, index) => (
-                                        <td key={index}>{item[key]}</td>
-                                    ))
+                                    Object.keys(tableHead).map((key, index) => {
+                                        if (key === "Trạng thái") {
+                                            let status = "Đang hoạt động";
+                                            let statusColor = "green";
+                                            if (item[tableHead[key]] == 2) {
+                                                status = "Đang bị khóa";
+                                                statusColor = "yellow";
+                                            }else if (item[tableHead[key]] == 3){
+                                                status = "Đã xóa";
+                                                statusColor = "red";
+                                            }
+                                            return <td key={index}>
+                                                <Tooltip title={status}>
+                                                    <Button style={{
+                                                        backgroundColor: statusColor
+                                                    }} shape="circle" size="small">
+
+                                                    </Button>
+                                                </Tooltip>
+                                            </td>
+                                        }
+
+                                        if (key === "Quyền hạn") {
+                                            let role = "Nhân viên";
+                                            if (item[tableHead[key]] == 1) {
+                                                role = "Quản lý";
+                                            }
+                                            return <td key={index}>{role}</td>
+                                        }
+
+                                        if (key === "Nhà hàng") {
+                                            const restaurant = restaurants.find((e) => e._id == item[tableHead[key]]);
+                                            const name = restaurant.name;
+                                            return <td key={index}>{name}</td>
+                                        }
+
+                                        return <td key={index}>{item[tableHead[key]]}</td>
+                                    })
                                 }
                                 {
                                     isAction && <td>{menuButtonAction()}</td>

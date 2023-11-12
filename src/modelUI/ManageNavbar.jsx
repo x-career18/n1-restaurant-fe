@@ -1,13 +1,14 @@
 import Account from "../pages/manages/Account";
+import Menu from "../pages/manages/Menu";
 
 const ManageNavbar = [
     {
-        name: "account",
+        name: "staff",
         page: <Account/>,
     },
     {
         name: "menu",
-        page: <Account/>,
+        page: <Menu/>,
     },
     {
         name: "restaurant",
@@ -23,10 +24,6 @@ const ManageNavbar = [
     },
     {
         name: "reservation",
-        page: <Account/>,
-    },
-    {
-        name: "customer",
         page: <Account/>,
     },
 ];

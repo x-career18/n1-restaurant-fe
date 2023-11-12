@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import AppContext from '../contexts/AppContext/AppContext';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -12,12 +12,31 @@ const showOrder = {
     "total": "Tổng giá"
 }
 
-const PaymentModal = ({ show, onHide, isCanel, tableName, payment }) => {
+const PaymentModal = ({ show, onHide, isCanel, table, payment }) => {
     const { foodOrder, setFoodOrder } = useContext(AppContext);
+    const [cash, setCash] = useState(0);
+    const [fullName, setFullName] = useState("");
+    const [phone, setPhone] = useState("");
 
     const handleCanel = () => {
         onHide();
         isCanel();
+        setCash(0);
+    };
+
+    const handleValue = (value) => {
+        if (value > totalOrder(foodOrder)) {
+            value = totalOrder(foodOrder);
+        }
+        setCash(value);
+    };
+
+    const handleOnchangeFullname = (value) => {
+        setFullName(value);
+    }
+
+    const handleOnchangePhone = (value) => {
+        setPhone(value);
     }
 
     return (
@@ -28,9 +47,43 @@ const PaymentModal = ({ show, onHide, isCanel, tableName, payment }) => {
             centered
             scrollable={true}
         >
-            <Modal.Header closeButton>
+            <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    {tableName}
+                    <div className='col'>
+                        {"Bàn số " + table?.tableId.toString()}
+                        <div className='row align-items-center mt-2'>
+                            <div className='col'>
+                                <h5>
+                                    Tên khách hàng
+                                </h5>
+                            </div>
+                            <div className='col border-bottom'>
+                                <Input
+                                    className='text-center'
+                                    placeholder="0"
+                                    bordered={false}
+                                    value={table?.fullname}
+                                    onChange={(e) => handleOnchangeFullname(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className='row align-items-center'>
+                            <div className='col'>
+                                <h5>
+                                    Số điện thoại
+                                </h5>
+                            </div>
+                            <div className='col border-bottom'>
+                                <Input
+                                    className='text-center'
+                                    placeholder="0"
+                                    bordered={false}
+                                    value={table?.phoneNo}
+                                    onChange={(e) => handleOnchangePhone(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -55,19 +108,26 @@ const PaymentModal = ({ show, onHide, isCanel, tableName, payment }) => {
                             </h5>
                         </div>
                     </div>
-                    {FormShowValue({ title: "Giảm giá" })}
-                    {FormShowValue({ title: "Thành tiền" })}
-                    {FormShowValue({ title: "Thanh toán" })}
+                    {/* {FormShowValue({ title: "Giảm giá" })} */}
+                    {/* {FormShowValue({ title: "Thành tiền" , value: totalOrder(foodOrder)})} */}
+                    {FormShowValue({ title: "Thanh toán", value: cash, onChange: handleValue })}
                     <div className='d-flex justify-content-end gap-3'>
                         <Button onClick={handleCanel}>Close</Button>
                         <Button onClick={() => {
-                            // cập nhật lại order
-                            payment();
+                            payment(
+                                {
+                                    fullname: fullName ? fullName : "",
+                                    phoneNo: phone ? phone : ""
+                                },
+                                {
+                                    method: "Cash",
+                                    value: cash
+                                });
                             onHide();
+                            setCash(0);
                         }}>Thanh toán</Button>
                     </div>
                 </div>
-
             </Modal.Footer>
         </Modal>
     );
@@ -106,7 +166,7 @@ const buildOrder = (order) => {
     </Table>
 }
 
-const FormShowValue = ({ title, value }) => {
+const FormShowValue = ({ title, value, onChange }) => {
     return (
         <div className='row'>
             <div className='col'>
@@ -115,7 +175,13 @@ const FormShowValue = ({ title, value }) => {
                 </h5>
             </div>
             <div className='col border-bottom'>
-                <Input className='text-end' placeholder="0" bordered={false} />
+                <Input
+                    className='text-end px-0'
+                    placeholder="0"
+                    bordered={false}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                />
             </div>
         </div>);
 }

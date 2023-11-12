@@ -7,6 +7,8 @@ import createReservation from '../models/Reservation';
 import orderAPI from '../apis/orderAPI';
 import { pasreStringtoData } from '../utils/DateUtil';
 import PaymentModal from '../modals/PaymentModal';
+import paymentAPI from '../apis/paymentAPI';
+import { isObjectEmpty } from '../utils/CheckEmpty';
 
 const Payment = () => {
     const [mode, contextHolder] = notification.useNotification(); // success info warning error
@@ -14,6 +16,7 @@ const Payment = () => {
     const { foodOrder, setFoodOrder } = useContext(AppContext);
     const [modalShow, setModalShow] = useState(false);
     const [selectTable, setSelectTable] = useState(null);
+    const [orderId, setOrderId] = useState(null);
     const [tableActiveList, settableActiveList] = useState([]);
 
     useEffect(() => {
@@ -37,6 +40,19 @@ const Payment = () => {
         }
     }
 
+    const updateReservationById = async (model) => {
+        try {
+            const response = await reservationAPI.update(model);
+            if (response.data.success) {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.log("error", error);
+            return false;
+        }
+    }
+
     const openNotificationWithIcon = (type, message) => {
         mode[type]({
             message: "Thông báo",
@@ -57,6 +73,7 @@ const Payment = () => {
         const orderRes = await getOrderByReservation(table._id);
         if (orderRes) {
             setFoodOrder(orderRes.order);
+            setOrderId(orderRes._id);
         } else {
             setFoodOrder(table.order);
         }
@@ -65,30 +82,53 @@ const Payment = () => {
         setModalShow(true);
     };
 
-    const handlepayment = async () => {
+    const handlePayment = async (info, payment) => {
         try {
-            const orderRes = await getOrderByReservation(selectTable._id);
-            if (!orderRes) {
-                await orderAPI.create({
-                    "reservationId": selectTable._id,
-                    "userId": auth.user._id,
-                    "order": foodOrder
-                });
-
-            } else {
-                await orderAPI.update({
-                    "id": orderRes._id,
-                    "order": foodOrder,
-                    "status": orderRes.status,
-                });
+            // Cập nhật thông tin khách hàng
+            let updateInfoReservation = {}
+            if (info.fullname != "") {
+                updateInfoReservation["fullname"] = info.fullname;
             }
 
-            openNotificationWithIcon(
-                "info",
-                "Thanh toán thành công.!"
-            );
+            if (info.phoneNo != "") {
+                updateInfoReservation["phoneNo"] = info.phoneNo;
+            }
+
+            if (!isObjectEmpty(updateInfoReservation)) {
+                const response = await updateReservationById(updateInfoReservation);
+                if (!response) {
+                    openNotificationWithIcon(
+                        "error",
+                        "Cập nhật thông tin không thành công.!"
+                    );
+                    return;
+                }
+            }
+
+            const response = await paymentAPI.create({
+                orderId: orderId,
+                userId: auth.user._id,
+                payment: payment
+            });
+
+            if (response.data.success) {
+                openNotificationWithIcon(
+                    "info",
+                    "Thanh toán thành công.!"
+                );
+                getAllReservationByRestaurantID();
+            } else {
+                openNotificationWithIcon(
+                    "info",
+                    "Thanh toán thất bại.!"
+                );
+            }
         } catch (error) {
             console.log("error", error);
+            openNotificationWithIcon(
+                "info",
+                "Hệ thống hiện không hoạt động.!"
+            );
         }
     };
 
@@ -156,9 +196,10 @@ const Payment = () => {
             <PaymentModal
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                tableName={"Bàn số " + selectTable?.tableId.toString()}
-                payment={() => { }}
-                isCanel={() => {}}
+                table={selectTable}
+                payment={(payment) => handlePayment(payment)}
+                isCanel={() => { }}
+
             />
         </>
     );

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { notification } from "antd";
+import { Input, notification } from "antd";
 import MenuModal from "../modals/MenuModal";
 import AuthContext from "../contexts/AuthContext/AuthContext";
 import reservationAPI from "../apis/reservationAPI";
@@ -7,6 +7,7 @@ import createReservation from "../models/Reservation";
 import { pasreStringtoData } from "../utils/DateUtil";
 import AppContext from "../contexts/AppContext/AppContext";
 import orderAPI from "../apis/orderAPI";
+import Search from "antd/es/input/Search";
 
 const Order = () => {
   const [mode, contextHolder] = notification.useNotification(); // success info warning error
@@ -15,6 +16,7 @@ const Order = () => {
   const [modalShow, setModalShow] = useState(false);
   const [selectTable, setSelectTable] = useState(null);
   const [tableActiveList, settableActiveList] = useState([]);
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     getAllReservationByRestaurantID();
@@ -104,6 +106,19 @@ const Order = () => {
     return null;
   };
 
+  const filterTable = async (phone) => {
+    await getAllReservationByRestaurantID();
+    if (phone != "") {
+      let newList = tableActiveList.filter((item) => {
+        return item.phoneNo.includes(phone);
+      });
+      settableActiveList(newList);
+    }
+  }
+  const onSearch = (value, _e, info) => {
+    filterTable(value);
+  };
+
   return (
     <>
       {contextHolder}
@@ -115,6 +130,7 @@ const Order = () => {
           }}
         >
           <h2 className="col px-4">Mời chọn bàn để đặt món</h2>
+          <Search className="col-3" placeholder="Tìm bằng số điện thoại" onSearch={onSearch} enterButton />
         </div>
         <div className="row row-cols-3 row-cols-lg-4">
           {tableActiveList.map((item, index) => {
@@ -123,8 +139,8 @@ const Order = () => {
               item.status === 1
                 ? "color-free"
                 : item.status === 0
-                ? "color-reservation"
-                : "color-active";
+                  ? "color-reservation"
+                  : "color-active";
             return (
               <div key={index} className="col p-4 ">
                 <button
@@ -153,7 +169,7 @@ const Order = () => {
         onHide={() => setModalShow(false)}
         tableName={"Bàn số " + selectTable?.tableId.toString()}
         order={handleOrder}
-        isCanel={() => {}}
+        isCanel={() => { }}
       />
     </>
   );
