@@ -1,28 +1,59 @@
-import React, { useState } from 'react'
-import AccountModal from '../../modals/AccountModal';
+import React, { useState } from 'react';
 import Board from './Board';
 import { MenuBoard } from '../../modelUI/MenuBoard';
+import menuItemAPI from '../../apis/menuAPI';
+import { useEffect } from 'react';
+import MenuItemModal from '../../modals/MenuItemModal';
+import { notification } from 'antd';
 
 const Menu = () => {
     const [modalShow, setModalShow] = useState(false);
     const [listObj, setListObj] = useState([]);
-    // useEffect(() => {
-    //     async function getAll() {
-    //         try {
-    //             const response = await accountAPI.getAll();
-    //             if (response.data.success) {
-    //                 const accountList = response.data.data;
-    //                 setListObj(accountList);
-    //             }
-    //         } catch (error) {
-    //             console.log("error", error);
-    //         }
-    //     };
-    //     getAll();
-    // }, []);
+    const [mode, contextHolder] = notification.useNotification();
+    const [selected, setSelected] = useState({ action: "c", index: -2 });
+
+    useEffect(() => {
+        getAll();
+    }, []);
+
+    async function getAll() {
+        try {
+            const response = await menuItemAPI.getAll();
+            if (response.data.success) {
+                const accountList = response.data.data;
+                setListObj(accountList);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
+    useEffect(() => {
+        if (selected.index < -1) {
+            setModalShow(false);
+            return;
+        }
+
+        setModalShow(true);
+    }, [selected])
 
     const handleOnclick = () => {
+        setSelected({ action: "c", index: -1 });
         setModalShow(true);
+    };
+
+    const handleIsDone = (success) => {
+        openNotificationWithIcon(
+            success ? "info" : "error",
+            `Tạo ${success ? "" : "không"} thành công`
+        );
+    };
+
+    const openNotificationWithIcon = (type, message) => {
+        mode[type]({
+            message: "Thông báo",
+            description: message,
+        });
     };
 
     return (
@@ -39,11 +70,17 @@ const Menu = () => {
             <Board
                 tableHead={MenuBoard}
                 listObj={listObj}
+                selected={({ action, index }) => setSelected({ action, index })}
             />
-            <AccountModal
+            <MenuItemModal
                 show={modalShow}
-                onHide={() => setModalShow(false)}
-                action="c"
+                onHide={() => {
+                    setModalShow(false);
+                    setSelected({ action: "c", index: -2 });
+                    getAll();
+                }}
+                action={selected.action}
+                model={listObj[selected.index]}
             />
         </>
     )

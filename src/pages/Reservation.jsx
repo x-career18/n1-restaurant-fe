@@ -14,6 +14,8 @@ import { getIdByRestaurantName, getIdByTableName } from "../utils/TableUtil";
 import tableAPI from "../apis/tableAPI";
 import TableContext from "../contexts/TableContext/TableContext";
 import createTable from "../models/Table";
+import OTPModal from "../modals/OTPModal";
+import OtpAPI from "../apis/OTPAPI";
 
 const Reservation = () => {
   const { restaurants, reservation, foodOrder, setFoodOrder } =
@@ -23,6 +25,8 @@ const Reservation = () => {
   const [mode, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+  const [modalOTPShow, setModalOTPShow] = useState(false);
+  const [reservationModel, setReservationModel] = useState({});
   const [checkInTime, setCheckInTime] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -107,9 +111,10 @@ const Reservation = () => {
       checkinTime: checkInTime.$d,
       expiredTime: expiredTime.$d,
     };
-
-    await createReservation(newReservation);
-    await getAllTableByRestaurantID();
+    
+    await OtpAPI.create(fields.phone);
+    setReservationModel(newReservation);
+    setModalOTPShow(true);
     
     searchParams.delete(param.selectTable);
     setSearchParams(searchParams);
@@ -118,6 +123,11 @@ const Reservation = () => {
     setSubmitting(false);
     setFoodOrder([]);
     setCheckInTime(null);
+  }
+
+  const handleOTP = async () => {
+    await createReservation(reservationModel);
+    await getAllTableByRestaurantID();
   }
 
   // Call API
@@ -326,8 +336,17 @@ const Reservation = () => {
         onHide={() => setModalShow(false)}
         tableName={reservation.restaurantId}
         isCanel={() => setFoodOrder([])}
-        order={() => {}}
+        order={() => { }}
       />
+
+      <OTPModal
+        show={modalOTPShow}
+        onHide={() => setModalOTPShow(false)}
+        phoneNo={reservationModel.phoneNo}
+        isCanel={() => { }}
+        isDone={handleOTP}
+      />
+
     </div>
   );
 };

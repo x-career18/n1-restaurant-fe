@@ -1,30 +1,59 @@
-import React, { useState } from 'react'
-import AccountModal from '../../modals/AccountModal';
+import React, { useState } from 'react';
 import Board from './Board';
-import { AccountBoard } from '../../modelUI/AccountBoard';
+import { RestaurantBoard } from '../../modelUI/RestaurantBoard';
+import { useEffect } from 'react';
+import { notification } from 'antd';
+import restaurantAPI from '../../apis/restaurantAPI';
+import RestaurantModal from '../../modals/RestaurantModal';
 
-const Account = () => {
+const Restaurant = () => {
     const [modalShow, setModalShow] = useState(false);
+    const [listObj, setListObj] = useState([]);
+    const [mode, contextHolder] = notification.useNotification();
+    const [selected, setSelected] = useState({ action: "c", index: -2 });
 
-    // Lấy danh sách user
-    // Thêm user
-    // Sửa user
-    // Xóa user
+    useEffect(() => {
+        getAll();
+    }, []);
 
-    let listObj = [];
-    for (let index = 0; index < 50; index++) {
-        listObj.push({
-            name: `Số hưởng số ${index} `,
-            address: "2",
-            openTime: "3",
-            closeTime: "4",
-            description: "5",
-            images: ["sdfklj"],
-        });
-    }
+    async function getAll() {
+        try {
+            const response = await restaurantAPI.getAll();
+            if (response.data.success) {
+                const accountList = response.data.data;
+                setListObj(accountList);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
+    useEffect(() => {
+        if (selected.index < -1) {
+            setModalShow(false);
+            return;
+        }
+
+        setModalShow(true);
+    }, [selected])
 
     const handleOnclick = () => {
+        setSelected({ action: "c", index: -1 });
         setModalShow(true);
+    };
+
+    const handleIsDone = (success) => {
+        openNotificationWithIcon(
+            success ? "info" : "error",
+            `Tạo ${success ? "" : "không"} thành công`
+        );
+    };
+
+    const openNotificationWithIcon = (type, message) => {
+        mode[type]({
+            message: "Thông báo",
+            description: message,
+        });
     };
 
     return (
@@ -35,20 +64,26 @@ const Account = () => {
                     className="bg-my-primary text-center text-white fs-5 p-2 rounded-1 border-0"
                     onClick={handleOnclick}
                 >
-                    Đăng ký tài khoản
+                    Thêm món
                 </button>
             </div>
             <Board
-                tableHead={AccountBoard}
+                tableHead={RestaurantBoard}
                 listObj={listObj}
+                selected={({ action, index }) => setSelected({ action, index })}
             />
-            <AccountModal
+            <RestaurantModal
                 show={modalShow}
-                onHide={() => setModalShow(false)}
-                action="c"
+                onHide={() => {
+                    setModalShow(false);
+                    setSelected({ action: "c", index: -2 });
+                    getAll();
+                }}
+                action={selected.action}
+                model={listObj[selected.index]}
             />
         </>
     )
 }
 
-export default Account
+export default Restaurant

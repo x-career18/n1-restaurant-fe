@@ -4,7 +4,7 @@ import Table from 'react-bootstrap/Table';
 import { FaRegPenToSquare, FaRegTrashCan } from "react-icons/fa6";
 import AppContext from '../../contexts/AppContext/AppContext';
 
-const Board = ({ tableHead = {}, listObj = [], isAction = true }) => {
+const Board = ({ tableHead = {}, listObj = [], isAction = true, selected }) => {
     const { restaurants } = useContext(AppContext);
     return (
         <Table className='mx-0' responsive striped bordered>
@@ -33,7 +33,7 @@ const Board = ({ tableHead = {}, listObj = [], isAction = true }) => {
                                             if (item[tableHead[key]] == 2) {
                                                 status = "Đang bị khóa";
                                                 statusColor = "yellow";
-                                            }else if (item[tableHead[key]] == 3){
+                                            } else if (item[tableHead[key]] == 3) {
                                                 status = "Đã xóa";
                                                 statusColor = "red";
                                             }
@@ -66,7 +66,16 @@ const Board = ({ tableHead = {}, listObj = [], isAction = true }) => {
                                     })
                                 }
                                 {
-                                    isAction && <td>{menuButtonAction()}</td>
+                                    isAction && <td> <div className='d-flex justify-content-start align-items-center gap-3'>
+                                        <span>
+                                            <FaRegPenToSquare className="text-info" onClick={() => selected({ action: "u", index: index })} />
+                                        </span>
+
+                                        <span >
+                                            <FaRegTrashCan className="text-danger" onClick={() => selected({ action: "d", index: index })} />
+                                        </span>
+                                    </div></td>
+
                                 }
                             </tr>
                         )
@@ -75,18 +84,6 @@ const Board = ({ tableHead = {}, listObj = [], isAction = true }) => {
             </tbody>
         </Table>
     )
-}
-
-const menuButtonAction = () => {
-    return <div className='d-flex justify-content-start align-items-center gap-3'>
-        <span>
-            <FaRegPenToSquare className="text-info" />
-        </span>
-
-        <span >
-            <FaRegTrashCan className="text-danger" />
-        </span>
-    </div>
 }
 
 export default Board;

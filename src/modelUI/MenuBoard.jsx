@@ -4,7 +4,7 @@ const MenuBoard = {
     "Đơn vị tính":"unit",
     "Giá bán":"costPerUnit",
     "Giảm giá":"discount",
-    "Trạng thái":"deleted",
+    "Trạng thái":"status",
 };
 
 export { MenuBoard};
