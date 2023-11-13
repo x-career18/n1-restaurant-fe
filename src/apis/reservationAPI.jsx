@@ -8,6 +8,7 @@ const reservationAPI = {
     update: (values) => axiosInstance.post(baseReservation + "/update", values),
     getAllByRestaurantId: (values, status) => axiosInstance.get(baseReservation + "/getAllByRestaurantId?restaurantId=" + values + "&status=" + status),
     getById: (values) => axiosInstance.get(baseReservation + "/getById?reservationId=" + values),
+    getAllByEmailAndPhone: (mail, phone) => axiosInstance.get(baseReservation + "/getById?email=" + mail + "&phone=" + phone),
     getAll: () => axiosInstance.get(baseReservation),
 };
 
