@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import Board from './Board';
 import { RestaurantBoard } from '../../modelUI/RestaurantBoard';
 import { useEffect } from 'react';
-import { notification } from 'antd';
 import restaurantAPI from '../../apis/restaurantAPI';
 import RestaurantModal from '../../modals/RestaurantModal';
 
 const Restaurant = () => {
     const [modalShow, setModalShow] = useState(false);
     const [listObj, setListObj] = useState([]);
-    const [mode, contextHolder] = notification.useNotification();
     const [selected, setSelected] = useState({ action: "c", index: -2 });
 
     useEffect(() => {
@@ -42,20 +40,6 @@ const Restaurant = () => {
         setModalShow(true);
     };
 
-    const handleIsDone = (success) => {
-        openNotificationWithIcon(
-            success ? "info" : "error",
-            `Tạo ${success ? "" : "không"} thành công`
-        );
-    };
-
-    const openNotificationWithIcon = (type, message) => {
-        mode[type]({
-            message: "Thông báo",
-            description: message,
-        });
-    };
-
     return (
         <>
             <div className="d-flex justify-content-end p-2">
@@ -64,7 +48,7 @@ const Restaurant = () => {
                     className="bg-my-primary text-center text-white fs-5 p-2 rounded-1 border-0"
                     onClick={handleOnclick}
                 >
-                    Thêm món
+                    Thêm nhà hàng
                 </button>
             </div>
             <Board

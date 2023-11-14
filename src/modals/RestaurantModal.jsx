@@ -1,16 +1,19 @@
 import Modal from 'react-bootstrap/Modal';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Restaurant from '../modelUI/Restaurant';
 import { Switch } from 'antd';
 import restaurantAPI from '../apis/restaurantAPI';
+import Carousel from 'react-bootstrap/Carousel';
 
 const RestaurantModal = ({ show, onHide, model = {}, action }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isActive, setIsActive] = useState(true);
     const [isImage, setIsImage] = useState("/defaultImage.jpg");
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [indexCarousel, setIndexCarousel] = useState(0);
 
     const validationSchema = Yup.object().shape({
         image: Yup.string(),
@@ -24,7 +27,7 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
     });
 
     const initialValues = {
-        image: model.image ?? "/defaultImage.jpg",
+        image: model.images ?? "/defaultImage.jpg",
         name: model.name ?? "",
         category: model.category ?? "",
         description: model.description ?? "",
@@ -39,7 +42,7 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
             setLoading(true);
             setError(null);
 
-            const success = actionList[action].action(model._id ,values, isActive, isImage);
+            const success = actionList[action].action(model._id, values, isActive, isImage);
 
             if (success) {
                 resetForm();
@@ -60,15 +63,48 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
         setIsActive(checked);
     }
 
+    const handleFileChange = (e) => {
+        if (!e.target.files || e.target.files.length === 0) {
+            return
+        }
+
+        const file = e.target.files[0];
+        setSelectedFile(file);
+    };
+
+    useEffect(() => {
+        if (!selectedFile) {
+            return
+        }
+
+        const objectUrl = URL.createObjectURL(selectedFile)
+        setIsImage(objectUrl)
+
+        // free memory when ever this component is unmounted
+        return () => {
+            URL.revokeObjectURL(objectUrl);
+        }
+    }, [selectedFile]);
+
+    const handleChangeSlider = (selectedIndex) => {
+        setIndexCarousel(selectedIndex);
+    };
+
+    const handleSelectSlider = (e, item) => {
+        e.preventDefault();
+        // setSelect(item);
+        // setModalShow(true);
+    };
+
     return (
         <Modal
             show={show}
-            onHide={
-                () => {
-                    setError(null);
-                    onHide();
-                }
-            }
+            onHide={() => {
+                onHide();
+                setError(null);
+                setSelectedFile(null);
+                // setIsImage("/defaultImage.jpg");
+            }}
             contentClassName="modal-90"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -92,14 +128,49 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
                                     if (item.fieldName == "images") {
                                         return <div key={item.fieldName} className="form-group col">
                                             <div className='row justify-content-center'>
-                                                <img
-                                                    src="/defaultImage.jpg"
-                                                    alt="/defaultImage.jpg"
-                                                    style={{
-                                                        width: "50%",
-                                                        height: "50%",
-                                                    }}
-                                                />
+                                                <div className='col-9'>
+                                                    {
+                                                        model.images ? <Carousel activeIndex={indexCarousel} onSelect={handleChangeSlider} interval={3000}>
+                                                            {
+                                                                model.images.map((item, index) => {
+                                                                    return (
+                                                                        <Carousel.Item
+                                                                            key={index}
+                                                                            interval={3000}
+                                                                            onClick={(e) => handleSelectSlider(e, item)}
+                                                                        >
+                                                                            <img
+                                                                                src={item}
+                                                                                alt={item}
+                                                                                style={{
+                                                                                    width: '100%',
+                                                                                    height: 500
+                                                                                }}
+                                                                            />
+                                                                        </Carousel.Item>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </Carousel > : <img
+                                                            src={action == "c" ? "/defaultImage.jpg" : model.images ?? "/defaultImage.jpg"}
+                                                            alt={action == "c" ? "/defaultImage.jpg" : model.images ?? "/defaultImage.jpg"}
+                                                            style={{
+                                                                width: "100%",
+                                                            }}
+                                                        />
+                                                    }
+
+                                                    <input
+                                                        style={{
+                                                            width: "100%"
+                                                        }}
+                                                        className="form-control"
+                                                        type="file"
+                                                        id="formFile"
+                                                        onChange={handleFileChange}
+                                                        accept="image/*"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     }
@@ -191,7 +262,7 @@ const actionCreate = async (values, isActive, isImage) => {
 const actionUpdate = async (index, values, isActive, isImage) => {
     const response = await restaurantAPI.update({
         id: index,
-        image: values.image ? values.image : "/defaultImage.jpg",
+        image: values.images ? values.images : "/defaultImage.jpg",
         name: values.name,
         category: values.category.toLowerCase(),
         description: values.description,
