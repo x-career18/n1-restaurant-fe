@@ -80,7 +80,16 @@ const Menu = () => {
                     getAll();
                 }}
                 action={selected.action}
-                model={listObj[selected.index]}
+                model={selected.index <= -1 ? {
+                    image: "/defaultImage.jpg",
+                    name: "",
+                    category: "",
+                    unit: "",
+                    costPerUnit: "",
+                    discount: "",
+                    description: "",
+                    deleted: true,
+                } : listObj[selected.index]}
             />
         </>
     )

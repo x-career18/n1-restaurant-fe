@@ -1,31 +1,34 @@
 import Account from "../pages/manages/Account";
+import Bill from "../pages/manages/Bill";
 import Menu from "../pages/manages/Menu";
+import Reservation from "../pages/manages/Reservation";
 import Restaurant from "../pages/manages/Restaurant";
+import Table from "../pages/manages/Table";
 
 const ManageNavbar = [
     {
         name: "staff",
-        page: <Account/>,
+        page: <Account />,
     },
     {
         name: "menu",
-        page: <Menu/>,
+        page: <Menu />,
     },
     {
         name: "restaurant",
-        page: <Restaurant/>,
+        page: <Restaurant />,
     },
     {
         name: "table",
-        page: <Account/>,
+        page: <Table />,
     },
     {
         name: "bill",
-        page: <Account/>,
+        page: <Bill />,
     },
     {
         name: "reservation",
-        page: <Account/>,
+        page: <Reservation />,
     },
 ];
 

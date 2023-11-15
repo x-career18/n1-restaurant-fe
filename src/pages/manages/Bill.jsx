@@ -3,7 +3,7 @@ import AccountModal from '../../modals/AccountModal';
 import Board from './Board';
 import { AccountBoard } from '../../modelUI/AccountBoard';
 
-const Account = () => {
+const Bill = () => {
     const [modalShow, setModalShow] = useState(false);
 
     // Lấy danh sách user
@@ -51,4 +51,4 @@ const Account = () => {
     )
 }
 
-export default Account
+export default Bill

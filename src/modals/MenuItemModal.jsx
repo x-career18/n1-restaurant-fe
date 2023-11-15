@@ -3,26 +3,28 @@ import React, { useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import MenuItem from '../modelUI/MenuItem';
-import { Switch } from 'antd';
+import { Switch, Upload } from 'antd';
 import menuItemAPI from '../apis/menuAPI';
+import imageAPI from '../apis/imageAPI';
+import { useEffect } from 'react';
+import { BASE_URL } from '../utils/LoadImage';
+import { PlusOutlined } from '@ant-design/icons';
 
 const category = ["All", "đồ nướng", "đồ uống", "đồ thui", "đồ chay"];
 
-const MenuItemModal = ({ show, onHide, model = {}, action }) => {
+const MenuItemModal = ({ show, onHide, model, action }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isActive, setIsActive] = useState(true);
-    const [isImage, setIsImage] = useState("/defaultImage.jpg");
+    const [fileList, setFileList] = useState();
 
     const validationSchema = Yup.object().shape({
-        image: Yup.string(),
         name: Yup.string().required("Name is required"),
         category: Yup.string().required("Category is required"),
         description: Yup.string(),
         unit: Yup.string().required("Unit is required"),
         costPerUnit: Yup.number().required("Cost is required"),
         discount: Yup.number().required("Discount is required"),
-        status: Yup.boolean(),
     });
 
     const initialValues = {
@@ -40,11 +42,39 @@ const MenuItemModal = ({ show, onHide, model = {}, action }) => {
         try {
             setLoading(true);
             setError(null);
+            console.log(fileList)
 
-            const success = actionList[action].action(model._id ,values, isActive, isImage);
+            let urlUpload = "";
+
+            if (fileList.status != "done") {
+                const formData = new FormData();                formData.append("image", fileList.fileSelect.file.originFileObj);
+                formData.append("restaurantId", model._id);
+                formData.append("name", fileList.fileSelect.file.name);
+                formData.append("folder", "menu");
+
+                const resImage = await imageAPI.upload(formData);
+                if (!resImage.data.success) {
+                    setError(`${actionList[action].title} không thành công.!`);
+                }
+
+                if (resImage.data.data.src != null) {
+                    urlUpload = resImage.data.data.src;
+                }
+            } else {
+                urlUpload = fileList.url;
+            }
+
+            if (urlUpload == "" && action != "c") {
+                setError(`${actionList[action].title} không thành công.!`);
+                return;
+            }
+
+            const success = await actionList[action].action(model._id, values, isActive, urlUpload);
 
             if (success) {
                 resetForm();
+                setFileList(null);
+                setIsActive(true);
                 setError(`${actionList[action].title} thành công.!`);
             } else {
                 setError(`${actionList[action].title} không thành công.!`);
@@ -61,6 +91,30 @@ const MenuItemModal = ({ show, onHide, model = {}, action }) => {
     const handleIsActive = (checked, _) => {
         setIsActive(checked);
     }
+
+    const handleChange = (value) => {
+        setFileList({
+            status: 'error',
+            url: URL.createObjectURL(value.file.originFileObj),
+            fileSelect: value
+        })
+    };
+
+    useEffect(() => {
+        if (model.image != "") {
+            if (model.image.startsWith("/")) {
+                setFileList({
+                    status: 'done',
+                    url: model.image,
+                });
+            } else {
+                setFileList({
+                    status: 'done',
+                    url: BASE_URL + model.image,
+                });
+            }
+        }
+    }, [model]);
 
     return (
         <Modal
@@ -93,15 +147,34 @@ const MenuItemModal = ({ show, onHide, model = {}, action }) => {
                                 {MenuItem.map((item) => {
                                     if (item.fieldName == "image") {
                                         return <div key={item.fieldName} className="form-group col">
-                                            <div className='row justify-content-center'>
-                                                <img
-                                                    src="/defaultImage.jpg"
-                                                    alt="/defaultImage.jpg"
-                                                    style={{
-                                                        width: "50%",
-                                                        height: "50%",
-                                                    }}
-                                                />
+                                            <div className='row justify-content-end'>
+                                                <div className='col-4 d-flex align-items-center'>
+                                                    <label className="fs-4 ">{item.label}</label>
+                                                </div>
+                                                <div className='col-8'>
+                                                    <Upload
+                                                        listType="picture-card"
+                                                        showUploadList={false}
+                                                        onChange={handleChange}
+                                                    >
+                                                        {fileList ? <img
+                                                            src={fileList.url}
+                                                            alt="image"
+                                                            style={{
+                                                                width: '100%',
+                                                            }}
+                                                        /> : <div>
+                                                            <PlusOutlined />
+                                                            <div
+                                                                style={{
+                                                                    marginTop: 8,
+                                                                }}
+                                                            >
+                                                                Upload
+                                                            </div>
+                                                        </div>}
+                                                    </Upload>
+                                                </div>
                                             </div>
                                         </div>
                                     }
