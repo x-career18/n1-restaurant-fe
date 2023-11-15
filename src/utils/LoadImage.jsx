@@ -30,4 +30,4 @@ const COMBOMENU = [
     "https://cdn.lauphan.com:9998/api/file/img?PathFile=/Menu/41/menuFile1672331987022.png",
 ];
 
-export { RESTAURANTS, FOOD, COMBOMENU, COMBO };
+export { RESTAURANTS, FOOD, COMBOMENU, COMBO, BASE_URL };

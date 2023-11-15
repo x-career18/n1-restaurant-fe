@@ -21,7 +21,7 @@ const Restaurant = [
         type: ""
     },
     {
-        label: "Đóng cửa",
+        label: "Giờ đóng cửa",
         fieldName: "closingTime",
         type: ""
     },

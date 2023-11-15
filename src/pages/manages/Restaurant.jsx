@@ -60,11 +60,18 @@ const Restaurant = () => {
                 show={modalShow}
                 onHide={() => {
                     setModalShow(false);
-                    setSelected({ action: "c", index: -2 });
                     getAll();
                 }}
                 action={selected.action}
-                model={listObj[selected.index]}
+                model={selected.index <= -1 ? {
+                    images: [],
+                    name: "",
+                    address: "",
+                    openingTime: "",
+                    closingTime: "",
+                    description: "",
+                    deleted: true,
+                } : listObj[selected.index]}
             />
         </>
     )

@@ -3,37 +3,35 @@ import React, { useEffect, useState } from 'react'
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Restaurant from '../modelUI/Restaurant';
-import { Switch } from 'antd';
+import { Switch, Upload } from 'antd';
 import restaurantAPI from '../apis/restaurantAPI';
-import Carousel from 'react-bootstrap/Carousel';
+import { PlusOutlined } from '@ant-design/icons';
+import imageAPI from '../apis/imageAPI';
+import { BASE_URL } from '../utils/LoadImage';
 
-const RestaurantModal = ({ show, onHide, model = {}, action }) => {
+const RestaurantModal = ({ show, onHide, model, action }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isActive, setIsActive] = useState(true);
-    const [isImage, setIsImage] = useState("/defaultImage.jpg");
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [indexCarousel, setIndexCarousel] = useState(0);
+    const [fileList, setFileList] = useState([
+
+    ]);
 
     const validationSchema = Yup.object().shape({
-        image: Yup.string(),
         name: Yup.string().required("Name is required"),
-        category: Yup.string().required("Category is required"),
+        address: Yup.string().required("Address is required"),
+        openingTime: Yup.string().required("OpeningTime is required"),
+        closingTime: Yup.string().required("ClosingTime is required"),
         description: Yup.string(),
-        unit: Yup.string().required("Unit is required"),
-        costPerUnit: Yup.number().required("Cost is required"),
-        discount: Yup.number().required("Discount is required"),
-        status: Yup.boolean(),
     });
 
     const initialValues = {
-        image: model.images ?? "/defaultImage.jpg",
+        image: model.images ?? "",
         name: model.name ?? "",
-        category: model.category ?? "",
+        address: model.address ?? "",
+        openingTime: model.openingTime ?? "",
+        closingTime: model.closingTime ?? "",
         description: model.description ?? "",
-        unit: model.unit ?? "",
-        costPerUnit: model.costPerUnit ?? "",
-        discount: model.discount ?? "",
         status: model.status ?? false,
     };
 
@@ -42,10 +40,42 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
             setLoading(true);
             setError(null);
 
-            const success = actionList[action].action(model._id, values, isActive, isImage);
+            let listImage = [];
+            for (let index = 0; index < fileList.length; index++) {
+                const element = fileList[index];
+                if (element.status != "done") {
+                    const formData = new FormData();
+                    formData.append("image", element.originFileObj);
+                    formData.append("restaurantId", model._id);
+                    formData.append("name", element.name);
+                    formData.append("folder", "restaurant");
+
+                    const resImage = await imageAPI.upload(formData);
+                    if (!resImage.data.success) {
+                        setError(`${actionList[action].title} không thành công.!`);
+                    }
+
+                    if (resImage.data.data.src != null) {
+                        listImage.push(resImage.data.data.src);
+                    }
+                }
+
+                if (element.url != null) {
+                    listImage.push(element.url);
+                }
+            }
+
+            if (listImage.length == 0 && action != "c") {
+                setError(`${actionList[action].title} không thành công.!`);
+                return;
+            }
+
+            const success = await actionList[action].action(model._id, values, isActive, listImage);
 
             if (success) {
                 resetForm();
+                setFileList([]);
+                setIsActive(true);
                 setError(`${actionList[action].title} thành công.!`);
             } else {
                 setError(`${actionList[action].title} không thành công.!`);
@@ -63,38 +93,27 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
         setIsActive(checked);
     }
 
-    const handleFileChange = (e) => {
-        if (!e.target.files || e.target.files.length === 0) {
-            return
-        }
-
-        const file = e.target.files[0];
-        setSelectedFile(file);
-    };
+    const handleChange = ({ fileList: newFileList }) => { setFileList(newFileList) };
 
     useEffect(() => {
-        if (!selectedFile) {
-            return
+        let fileList = [];
+        for (let index = 0; index < model.images.length; index++) {
+            const element = model.images[index];
+            if (element.startsWith("http")) {
+                fileList.push({
+                    status: 'done',
+                    url: element,
+                });
+            } else {
+                fileList.push({
+                    status: 'done',
+                    url: BASE_URL + element,
+                });
+            }
+
         }
-
-        const objectUrl = URL.createObjectURL(selectedFile)
-        setIsImage(objectUrl)
-
-        // free memory when ever this component is unmounted
-        return () => {
-            URL.revokeObjectURL(objectUrl);
-        }
-    }, [selectedFile]);
-
-    const handleChangeSlider = (selectedIndex) => {
-        setIndexCarousel(selectedIndex);
-    };
-
-    const handleSelectSlider = (e, item) => {
-        e.preventDefault();
-        // setSelect(item);
-        // setModalShow(true);
-    };
+        setFileList(fileList);
+    }, [model]);
 
     return (
         <Modal
@@ -102,8 +121,6 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
             onHide={() => {
                 onHide();
                 setError(null);
-                setSelectedFile(null);
-                // setIsImage("/defaultImage.jpg");
             }}
             contentClassName="modal-90"
             aria-labelledby="contained-modal-title-vcenter"
@@ -126,53 +143,24 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
                             <Form className="form-horizontal h-100  position-relative">
                                 {Restaurant.map((item) => {
                                     if (item.fieldName == "images") {
-                                        return <div key={item.fieldName} className="form-group col">
-                                            <div className='row justify-content-center'>
-                                                <div className='col-9'>
-                                                    {
-                                                        model.images ? <Carousel activeIndex={indexCarousel} onSelect={handleChangeSlider} interval={3000}>
-                                                            {
-                                                                model.images.map((item, index) => {
-                                                                    return (
-                                                                        <Carousel.Item
-                                                                            key={index}
-                                                                            interval={3000}
-                                                                            onClick={(e) => handleSelectSlider(e, item)}
-                                                                        >
-                                                                            <img
-                                                                                src={item}
-                                                                                alt={item}
-                                                                                style={{
-                                                                                    width: '100%',
-                                                                                    height: 500
-                                                                                }}
-                                                                            />
-                                                                        </Carousel.Item>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </Carousel > : <img
-                                                            src={action == "c" ? "/defaultImage.jpg" : model.images ?? "/defaultImage.jpg"}
-                                                            alt={action == "c" ? "/defaultImage.jpg" : model.images ?? "/defaultImage.jpg"}
-                                                            style={{
-                                                                width: "100%",
-                                                            }}
-                                                        />
-                                                    }
-
-                                                    <input
+                                        return <>
+                                            <Upload
+                                                listType="picture-card"
+                                                fileList={fileList}
+                                                onChange={handleChange}
+                                            >
+                                                {fileList.length >= 3 ? null : <div>
+                                                    <PlusOutlined />
+                                                    <div
                                                         style={{
-                                                            width: "100%"
+                                                            marginTop: 8,
                                                         }}
-                                                        className="form-control"
-                                                        type="file"
-                                                        id="formFile"
-                                                        onChange={handleFileChange}
-                                                        accept="image/*"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
+                                                    >
+                                                        Upload
+                                                    </div>
+                                                </div>}
+                                            </Upload>
+                                        </>
                                     }
 
                                     if (item.fieldName == "status") {
@@ -234,7 +222,6 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
                                             {actionList[action].title}
                                         </button>
                                     </div>
-
                                 </div>
                             </Form>
                         );
@@ -245,15 +232,14 @@ const RestaurantModal = ({ show, onHide, model = {}, action }) => {
     );
 }
 
-const actionCreate = async (values, isActive, isImage) => {
+const actionCreate = async (index, values, isActive, isImage) => {
     const response = await restaurantAPI.create({
-        image: values.image ? values.image : "/defaultImage.jpg",
+        images: isImage,
         name: values.name,
-        category: values.category.toLowerCase(),
+        address: values.address,
+        openingTime: values.openingTime,
+        closingTime: values.closingTime,
         description: values.description,
-        unit: values.unit,
-        costPerUnit: values.costPerUnit,
-        discount: values.discount,
         status: isActive ? 1 : 2,
     });
     return response.data.success;
@@ -262,13 +248,12 @@ const actionCreate = async (values, isActive, isImage) => {
 const actionUpdate = async (index, values, isActive, isImage) => {
     const response = await restaurantAPI.update({
         id: index,
-        image: values.images ? values.images : "/defaultImage.jpg",
+        images: isImage,
         name: values.name,
-        category: values.category.toLowerCase(),
+        address: values.address,
+        openingTime: values.openingTime,
+        closingTime: values.closingTime,
         description: values.description,
-        unit: values.unit,
-        costPerUnit: values.costPerUnit,
-        discount: values.discount,
         status: isActive ? 1 : 2,
     });
     return response.data.success;
@@ -277,14 +262,14 @@ const actionUpdate = async (index, values, isActive, isImage) => {
 const actionDelete = async (index, values, isActive, isImage) => {
     const response = await restaurantAPI.update({
         id: index,
-        image: values.image ? values.image : "/defaultImage.jpg",
+        images: isImage,
         name: values.name,
-        category: values.category.toLowerCase(),
+        address: values.address,
+        openingTime: values.openingTime,
+        closingTime: values.closingTime,
         description: values.description,
-        unit: values.unit,
-        costPerUnit: values.costPerUnit,
-        discount: values.discount,
-        status: 3,
+        status: isActive ? 1 : 2,
+        deleted: true
     });
     return response.data.success;
 }
