@@ -5,6 +5,8 @@ import { FaBowlFood, FaAngleDown } from "react-icons/fa6";
 import FoodOrder from './FoodOrder';
 import AppContext from '../../contexts/AppContext/AppContext';
 import { category } from '../../models/CategoryFood';
+import createFood from '../../models/Food';
+import menuItemAPI from '../../apis/menuAPI';
 
 const dataTemple = {
     id: 1,
@@ -29,18 +31,22 @@ const dataTemple = {
 }
 
 const Food = ({ showDesc = true, isModal = false }) => {
-    const { foodOrder, setFoodOrder, menu } = useContext(AppContext);
+    const { foodOrder, setFoodOrder } = useContext(AppContext);
     const [categoryActive, setCategoryActive] = useState("All");
     const [pageNo, setPageNo] = useState(1);
     const [countPageTotal, setCountPageTotal] = useState(0);
     const [showMenu, setShowMenu] = useState([]);
+    const [menu, setMenu] = useState([]);
     const [mode, contextHolder] = notification.useNotification();
 
     // Load lần đầu
     useEffect(() => {
+        getAllMenu();
+    }, []);
+
+    useEffect(() => {
         handleShowMenu(1);
     }, [menu]);
-
     // Cập nhật menu khi chọn category
     useEffect(() => {
         handleShowMenu(1);
@@ -84,6 +90,34 @@ const Food = ({ showDesc = true, isModal = false }) => {
             "discount": item.discount,
             "costPerUnit": item.price
         }]);
+    }
+    const getAllMenu = async () => {
+        try {
+            const response = await menuItemAPI.getAll();
+            // Check response
+            if (response.data.success) {
+                const listMenu = response.data.data;
+                let temp = [];
+                for (let index = 0; index < listMenu.length; index++) {
+                    const item = listMenu[index];
+                    if (item.status != 1) continue;
+                    temp.push(createFood({
+                        id: item._id,
+                        foodCode: index,
+                        img: item.image,
+                        foodName: item.name,
+                        category: item.category,
+                        description: item.description,
+                        unit: item.unit,
+                        price: item.costPerUnit,
+                        discount: item.discount
+                    }));
+                }
+                setMenu(temp);
+            }
+
+        } catch (error) {
+        }
     }
 
     let items = [];

@@ -7,6 +7,7 @@ import createFood from "../../models/Food";
 import { category } from "../../models/CategoryFood";
 import restaurantAPI from "../../apis/restaurantAPI";
 import comboAPI from "../../apis/comboAPI";
+import menuItemAPI from "../../apis/menuAPI";
 
 const AppState = ({ children }) => {
   const [tableList, setTableList] = useState([]);
@@ -38,21 +39,22 @@ const AppState = ({ children }) => {
     getAllCombo();
 
     let menu = [];
-    for (let index = 0; index < 50; index++) {
-      const categoryId = randomInt(4, 1);
-      const item = createFood({
-        id: index,
-        foodCode: index,
-        img: FOOD[categoryId],
-        foodName: categoryId - 1,
-        category: category[categoryId],
-        description: "",
-        unit: "Chiếc",
-        price: randomInt(100, 10),
-        discount: 0
-      });
-      menu.push(item);
-    }
+    // const listMenu = getAllMenu();
+    // for (let index = 0; index < listMenu.lenght; index++) {
+    //   const item = listMenu[index];
+    //   if (item.status != 1) continue;
+    //   menu.push(createFood({
+    //     id: item._id,
+    //     foodCode: index,
+    //     img: item.image,
+    //     foodName: item.name,
+    //     category: item.category,
+    //     description: item.description,
+    //     unit: item.unit,
+    //     price: item.costPerUnit,
+    //     discount: 0
+    //   }));
+    // }
 
     setTableList(tables);
     setMenu(menu);
@@ -88,26 +90,41 @@ const AppState = ({ children }) => {
     }
   }
 
-  const refreshTableList = () => {
-    let newTableList = [
-      ...tableList,
-      createTable({
-        tableId: 5,
-        image: "/table/CN_6.png",
-        status: 1,
-        floor: '1',
-        tablenumber: "Bàn số 0",
-        numberSeat: "6",
-        shape: "Vuông"
-      })
-    ];
-    setTableList(newTableList);
-  };
+  const getAllMenu = async () => {
+    try {
+      const response = await menuItemAPI.getAll();
+      // Check response
+      if (response.data.success) {
+        return response.data.data;
+      }
+
+      setRequestError(false);
+    } catch (error) {
+      setRequestError(true);
+      return [];
+    }
+  }
+
+  // const refreshTableList = () => {
+  //   let newTableList = [
+  //     ...tableList,
+  //     createTable({
+  //       tableId: 5,
+  //       image: "/table/CN_6.png",
+  //       status: 1,
+  //       floor: '1',
+  //       tablenumber: "Bàn số 0",
+  //       numberSeat: "6",
+  //       shape: "Vuông"
+  //     })
+  //   ];
+  //   setTableList(newTableList);
+  // };
 
   return (
     <AppContext.Provider
       value={{
-        tableList, setTableList, refreshTableList,
+        tableList, setTableList,
         selectList, setSelectList,
         reservation, setReservation,
         restaurants, setRestaurants,
