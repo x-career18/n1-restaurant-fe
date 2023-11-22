@@ -23,13 +23,9 @@ const ManageNavbar = [
         page: <Table />,
     },
     {
-        name: "bill",
-        page: <Bill />,
-    },
-    {
-        name: "reservation",
-        page: <Reservation />,
-    },
+        name: "OTP",
+        page: <Table />,
+    }
 ];
 
 export { ManageNavbar };
