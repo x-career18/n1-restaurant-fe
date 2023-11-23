@@ -18,10 +18,6 @@ const ManageNavbar = [
         page: <Menu />,
     },
     {
-        name: "bill",
-        page: <Bill />,
-    },
-    {
         name: "table",
         page: <Table />,
     },
