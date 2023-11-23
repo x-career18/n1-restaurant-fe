@@ -65,7 +65,7 @@ const Food = ({ showDesc = true, isModal = false }) => {
     const handleShowMenu = (pageNo) => {
         if (menu?.length == 0) return;
         let newMenu = [];
-        const filterList = categoryActive != "All" ? menu.filter((e) => e.category == categoryActive) : menu;
+        const filterList = categoryActive != "All" ? menu.filter((e) => e.category == categoryActive.toLocaleLowerCase()) : menu;
         const startIndex = 12 * (pageNo - 1);
         for (let index = 0; index < 12; index++) {
             newMenu.push(filterList[index + startIndex]);
@@ -130,6 +130,7 @@ const Food = ({ showDesc = true, isModal = false }) => {
             disabled: false,
         });
     });
+
     const openNotificationWithIcon = (type, message) => {
         mode[type]({
             message: "Thông báo",

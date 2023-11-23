@@ -1,7 +1,6 @@
 import Account from "../pages/manages/Account";
 import Bill from "../pages/manages/Bill";
 import Menu from "../pages/manages/Menu";
-import Reservation from "../pages/manages/Reservation";
 import Restaurant from "../pages/manages/Restaurant";
 import Table from "../pages/manages/Table";
 
@@ -11,12 +10,16 @@ const ManageNavbar = [
         page: <Account />,
     },
     {
+        name: "restaurant",
+        page: <Restaurant />,
+    },
+    {
         name: "menu",
         page: <Menu />,
     },
     {
-        name: "restaurant",
-        page: <Restaurant />,
+        name: "bill",
+        page: <Bill />,
     },
     {
         name: "table",

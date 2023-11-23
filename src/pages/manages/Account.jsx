@@ -7,28 +7,37 @@ import accountAPI from '../../apis/accountAPI';
 const Account = () => {
     const [modalShow, setModalShow] = useState(false);
     const [listObj, setListObj] = useState([]);
-    // Lấy danh sách user
-    // Thêm user
-    // Sửa user
-    // Xóa user
+    const [selected, setSelected] = useState({ action: "c", index: -2 });
 
     useEffect(() => {
-        async function getAll() {
-            try {
-                const response = await accountAPI.getAll();
-                if (response.data.success) {
-                    const accountList = response.data.data;
-                    setListObj(accountList);
-                }
-            } catch (error) {
-                console.log("error", error);
-            }
-        };
+        if (selected.index < -1) {
+            setModalShow(false);
+            return;
+        }
+
+        setModalShow(true);
+    }, [selected])
+
+    const handleOnclick = () => {
+        setSelected({ action: "c", index: -1 });
+        setModalShow(true);
+    };
+
+    useEffect(() => {
+
         getAll();
     }, []);
 
-    const handleOnclick = () => {
-        setModalShow(true);
+    async function getAll() {
+        try {
+            const response = await accountAPI.getAll();
+            if (response.data.success) {
+                const accountList = response.data.data;
+                setListObj(accountList);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
     };
 
     return (
@@ -45,11 +54,26 @@ const Account = () => {
             <Board
                 tableHead={AccountBoard}
                 listObj={listObj}
+                selected={({ action, index }) => setSelected({ action, index })}
             />
             <AccountModal
                 show={modalShow}
-                onHide={() => setModalShow(false)}
-                action="c"
+                onHide={() => {
+                    setModalShow(false);
+                    setSelected({ action: "c", index: -2 });
+                    getAll();
+                }}
+                action={selected.action}
+                model={selected.index <= -1 ? {
+                    avata: "/defaultImage.jpg",
+                    name: "",
+                    category: "",
+                    unit: "",
+                    costPerUnit: "",
+                    discount: "",
+                    description: "",
+                    deleted: true,
+                } : listObj[selected.index]}
             />
         </>
     )

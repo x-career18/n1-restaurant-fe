@@ -31,7 +31,7 @@ const createFood = ({
         id,
         foodCode,
         img,
-        foodName: FoodName[foodName],
+        foodName,
         category,
         description,
         unit,
